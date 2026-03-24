@@ -1,0 +1,15 @@
+{
+  "name": "iar-grant-platform",
+  "version": "1.0.0",
+  "description": "I Am Redemption Grant Command Center",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
