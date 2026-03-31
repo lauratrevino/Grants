@@ -1,0 +1,2052 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Grant Command Center — I Am Redemption</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300&display=swap" rel="stylesheet">
+<style>
+:root{
+  --black:#0d0d0d;--charcoal:#1a1a1a;--graphite:#222;--mid:#333;--border:#3a3a3a;
+  --muted:#777;--light:#bbb;--white:#fff;
+  --gold:#c9a84c;--gold-bright:#f0c040;--gold-dim:#5a4720;--gold-bg:rgba(201,168,76,.08);
+  --green:#4a9e6a;--green-bg:rgba(74,158,106,.1);
+  --blue:#4a7eb5;--blue-bg:rgba(74,126,181,.1);
+  --red:#c05050;--red-bg:rgba(192,80,80,.1);
+  --orange:#c07840;--orange-bg:rgba(192,120,64,.1);
+  --font-d:'Bebas Neue',Impact,sans-serif;
+  --font-b:'Montserrat','Helvetica Neue',sans-serif;
+  --r:4px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--font-b);background:var(--black);color:var(--light);font-size:14px;line-height:1.6;min-height:100vh;overflow-x:hidden}
+button,input,select,textarea{font-family:var(--font-b)}
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:var(--charcoal)}
+::-webkit-scrollbar-thumb{background:var(--mid);border-radius:3px}
+
+/* ── NAV ── */
+.nav{position:sticky;top:0;z-index:200;background:var(--charcoal);border-bottom:1px solid var(--mid);padding:.6rem 1.5rem;display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap}
+.nav-brand{font-family:var(--font-d);font-size:20px;letter-spacing:.08em;color:var(--white);margin-right:auto;display:flex;align-items:center;gap:.4rem}
+.nav-brand span{color:var(--gold)}
+.nav-tabs{display:flex;gap:2px;background:var(--graphite);border:1px solid var(--mid);border-radius:var(--r);padding:3px;flex-wrap:wrap}
+.tab-btn{font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;padding:6px 14px;border:none;border-radius:2px;cursor:pointer;background:transparent;color:var(--muted);transition:all .15s;white-space:nowrap}
+.tab-btn.active{background:var(--gold);color:var(--black)}
+.tab-btn:hover:not(.active){color:var(--white)}
+.ai-status{font-size:11px;font-weight:600;letter-spacing:.08em;display:flex;align-items:center;gap:6px;color:var(--muted)}
+.ai-dot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+
+/* ── LAYOUT ── */
+.page{display:none;max-width:1200px;margin:0 auto;padding:1.5rem}
+.page.active{display:block}
+
+/* ── SECTION HEADERS ── */
+.section-head{margin-bottom:1.5rem}
+.section-eyebrow{font-size:10px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:.4rem}
+.section-title{font-family:var(--font-d);font-size:clamp(28px,4vw,42px);letter-spacing:.04em;color:var(--white);line-height:1}
+.section-sub{font-size:13px;font-weight:300;color:var(--muted);margin-top:.4rem}
+
+/* ── STAT ROW ── */
+.stat-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:1.5rem}
+.stat-card{background:var(--charcoal);border:1px solid var(--mid);border-top:2px solid var(--gold);border-radius:var(--r);padding:.9rem 1rem}
+.stat-card.green{border-top-color:var(--green)}
+.stat-card.blue{border-top-color:var(--blue)}
+.stat-card.red{border-top-color:var(--red)}
+.stat-n{font-family:var(--font-d);font-size:32px;letter-spacing:.02em;color:var(--gold);line-height:1}
+.stat-card.green .stat-n{color:var(--green)}
+.stat-card.blue .stat-n{color:var(--blue)}
+.stat-card.red .stat-n{color:var(--red)}
+.stat-l{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-top:3px}
+
+/* ── AI SEARCH BOX ── */
+.ai-search-wrap{background:var(--charcoal);border:1px solid var(--gold-dim);border-radius:var(--r);padding:1.25rem;margin-bottom:1.5rem}
+.ai-search-label{font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin-bottom:.6rem}
+.ai-search-row{display:flex;gap:8px;flex-wrap:wrap}
+.ai-search-input{flex:1;min-width:220px;background:var(--graphite);border:1px solid var(--mid);border-radius:var(--r);padding:10px 14px;color:var(--white);font-size:13px;outline:none;transition:border-color .15s}
+.ai-search-input:focus{border-color:var(--gold)}
+.ai-search-input::placeholder{color:var(--muted)}
+.btn-gold{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;background:var(--gold);color:var(--black);border:none;padding:10px 20px;border-radius:var(--r);cursor:pointer;transition:background .2s;white-space:nowrap}
+.btn-gold:hover{background:var(--gold-bright)}
+.btn-gold:disabled{opacity:.5;cursor:not-allowed}
+.btn-outline{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;background:transparent;color:var(--light);border:1px solid var(--border);padding:9px 18px;border-radius:var(--r);cursor:pointer;transition:all .15s}
+.btn-outline:hover{border-color:var(--gold);color:var(--gold)}
+
+/* ── FILTERS ── */
+.filter-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1.25rem;align-items:center}
+.filter-select{background:var(--charcoal);border:1px solid var(--mid);border-radius:var(--r);padding:8px 12px;color:var(--light);font-size:12px;font-weight:500;outline:none;cursor:pointer;appearance:none;-webkit-appearance:none}
+.filter-select:focus{border-color:var(--gold)}
+.search-box{background:var(--charcoal);border:1px solid var(--mid);border-radius:var(--r);padding:8px 14px;color:var(--white);font-size:12px;outline:none;flex:1;min-width:180px}
+.search-box:focus{border-color:var(--gold)}
+.search-box::placeholder{color:var(--muted)}
+
+/* ── GRANT CARDS ── */
+.grants-grid{display:grid;gap:10px}
+.grant-card{background:var(--charcoal);border:1px solid var(--mid);border-left:3px solid var(--gold-dim);border-radius:var(--r);padding:1rem 1.25rem;transition:border-color .2s,transform .15s;cursor:pointer}
+.grant-card:hover{border-color:var(--gold);transform:translateX(2px)}
+.grant-card.veteran{border-left-color:#5b8ab5}
+.grant-card.saved{border-left-color:var(--green)}
+.gc-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:8px}
+.gc-name{font-family:var(--font-d);font-size:17px;letter-spacing:.04em;color:var(--white);line-height:1.2;flex:1}
+.gc-actions{display:flex;gap:6px;flex-shrink:0}
+.icon-btn{background:var(--graphite);border:1px solid var(--mid);border-radius:var(--r);padding:5px 8px;cursor:pointer;font-size:12px;color:var(--muted);transition:all .15s;white-space:nowrap}
+.icon-btn:hover{border-color:var(--gold);color:var(--gold)}
+.icon-btn.active{background:var(--gold-bg);border-color:var(--gold-dim);color:var(--gold)}
+.badge-row{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px}
+.badge{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:2px 8px;border-radius:2px;white-space:nowrap}
+.b-austin{background:rgba(201,168,76,.15);color:var(--gold);border:1px solid rgba(201,168,76,.3)}
+.b-texas{background:rgba(106,159,94,.12);color:#8dc881;border:1px solid rgba(106,159,94,.25)}
+.b-national{background:rgba(91,138,181,.12);color:#7db3dc;border:1px solid rgba(91,138,181,.25)}
+.b-fed{background:rgba(200,120,60,.1);color:#e8964a;border:1px solid rgba(200,120,60,.25)}
+.b-priv{background:rgba(170,100,180,.1);color:#c989d8;border:1px solid rgba(170,100,180,.25)}
+.b-comm{background:rgba(80,160,120,.1);color:#6dcca0;border:1px solid rgba(80,160,120,.25)}
+.b-corp{background:rgba(80,140,200,.1);color:#70b8f0;border:1px solid rgba(80,140,200,.25)}
+.b-urgent{background:var(--red-bg);color:#f07060;border:1px solid rgba(192,80,80,.3)}
+.b-upcoming{background:var(--gold-bg);color:var(--gold);border:1px solid rgba(201,168,76,.25)}
+.b-open{background:var(--green-bg);color:#6ddaa0;border:1px solid rgba(80,180,120,.2)}
+.b-vet{background:var(--blue-bg);color:#7db3dc;border:1px solid rgba(91,138,181,.25)}
+
+/* match score */
+.match-score{display:flex;align-items:center;gap:5px;font-size:11px;font-weight:700}
+.score-bar-wrap{width:60px;height:5px;background:var(--mid);border-radius:3px;overflow:hidden}
+.score-bar{height:100%;border-radius:3px;transition:width .5s}
+
+.gc-desc{font-size:12px;color:rgba(187,187,187,.85);line-height:1.6;margin-bottom:10px}
+.gc-footer{display:flex;flex-wrap:wrap;gap:12px;align-items:center;border-top:1px solid var(--mid);padding-top:10px;font-size:11px;color:var(--muted)}
+.gc-footer .countdown{font-weight:600;color:var(--gold)}
+.gc-footer .countdown.urgent{color:#f07060}
+.gc-link{margin-left:auto;font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);text-decoration:none;transition:color .15s}
+.gc-link:hover{color:var(--gold-bright)}
+
+/* loading spinner */
+.spinner{display:inline-block;width:16px;height:16px;border:2px solid var(--mid);border-top-color:var(--gold);border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:6px}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* AI response box */
+.ai-response{background:var(--graphite);border:1px solid var(--gold-dim);border-radius:var(--r);padding:1rem 1.25rem;margin-top:1rem;font-size:13px;color:var(--light);line-height:1.7;white-space:pre-wrap;max-height:400px;overflow-y:auto}
+.ai-response h3{font-family:var(--font-d);font-size:18px;letter-spacing:.04em;color:var(--gold);margin-bottom:.5rem}
+.ai-response .grant-result{background:var(--charcoal);border:1px solid var(--mid);border-radius:var(--r);padding:.75rem 1rem;margin:.75rem 0}
+.ai-response .grant-result h4{color:var(--white);font-size:14px;font-weight:600;margin-bottom:.25rem}
+.ai-response .grant-result p{font-size:12px;color:var(--muted)}
+.ai-response .grant-result .meta{display:flex;gap:1rem;margin-top:.4rem;font-size:11px;font-weight:600;color:var(--gold)}
+
+/* ── TRACKER ── */
+.tracker-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px;margin-bottom:1.5rem}
+.tracker-col{background:var(--charcoal);border:1px solid var(--mid);border-radius:var(--r);overflow:hidden}
+.tracker-col-head{padding:.75rem 1rem;border-bottom:1px solid var(--mid);display:flex;align-items:center;justify-content:space-between}
+.tracker-col-title{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase}
+.tracker-col-title.prospecting{color:var(--muted)}
+.tracker-col-title.applied{color:var(--blue)}
+.tracker-col-title.in-progress{color:var(--gold)}
+.tracker-col-title.awarded{color:var(--green)}
+.tracker-col-title.declined{color:var(--red)}
+.tracker-items{min-height:80px;padding:.5rem}
+.tracker-item{background:var(--graphite);border:1px solid var(--mid);border-radius:var(--r);padding:.6rem .75rem;margin-bottom:6px;cursor:pointer;transition:border-color .15s}
+.tracker-item:hover{border-color:var(--gold)}
+.tracker-item-name{font-size:12px;font-weight:600;color:var(--white);margin-bottom:2px}
+.tracker-item-meta{font-size:10px;color:var(--muted)}
+.tracker-item-amount{font-size:10px;font-weight:700;color:var(--gold)}
+.tracker-count{font-size:11px;font-weight:700;color:var(--muted);background:var(--graphite);border:1px solid var(--mid);border-radius:20px;padding:2px 8px}
+
+/* ── WRITER ── */
+.writer-layout{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.writer-panel{background:var(--charcoal);border:1px solid var(--mid);border-radius:var(--r);padding:1rem 1.25rem}
+.writer-panel h3{font-family:var(--font-d);font-size:18px;letter-spacing:.04em;color:var(--white);margin-bottom:1rem}
+.writer-select{width:100%;background:var(--graphite);border:1px solid var(--mid);border-radius:var(--r);padding:9px 12px;color:var(--light);font-size:13px;margin-bottom:10px;outline:none}
+.writer-select:focus{border-color:var(--gold)}
+.writer-textarea{width:100%;min-height:120px;background:var(--graphite);border:1px solid var(--mid);border-radius:var(--r);padding:10px 12px;color:var(--white);font-size:13px;line-height:1.6;resize:vertical;outline:none;font-family:var(--font-b)}
+.writer-textarea:focus{border-color:var(--gold)}
+.writer-output{width:100%;min-height:280px;background:var(--graphite);border:1px solid var(--mid);border-radius:var(--r);padding:10px 12px;color:var(--light);font-size:13px;line-height:1.7;resize:vertical;outline:none;font-family:var(--font-b)}
+.writer-actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+
+/* ── CALENDAR ── */
+.calendar-wrap{background:var(--charcoal);border:1px solid var(--mid);border-radius:var(--r);overflow:hidden;margin-bottom:1.5rem}
+.calendar-head{padding:1rem 1.25rem;border-bottom:1px solid var(--mid);display:flex;align-items:center;justify-content:space-between}
+.calendar-title{font-family:var(--font-d);font-size:22px;letter-spacing:.05em;color:var(--white)}
+.calendar-nav button{background:var(--graphite);border:1px solid var(--mid);border-radius:var(--r);padding:5px 12px;color:var(--light);cursor:pointer;font-size:14px;transition:all .15s}
+.calendar-nav button:hover{border-color:var(--gold);color:var(--gold)}
+.calendar-grid-head{display:grid;grid-template-columns:repeat(7,1fr);gap:1px;background:var(--mid)}
+.cal-day-label{background:var(--graphite);text-align:center;padding:.4rem;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.calendar-body{display:grid;grid-template-columns:repeat(7,1fr);gap:1px;background:var(--mid)}
+.cal-day{background:var(--charcoal);min-height:70px;padding:.4rem;position:relative;vertical-align:top}
+.cal-day.other-month{background:var(--graphite)}
+.cal-day.today{background:var(--gold-bg)}
+.cal-date{font-size:11px;font-weight:600;color:var(--muted);margin-bottom:3px}
+.cal-day.today .cal-date{color:var(--gold);font-weight:700}
+.cal-event{font-size:9px;font-weight:600;padding:2px 5px;border-radius:2px;margin-bottom:2px;cursor:pointer;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;line-height:1.4}
+.cal-event.urgent{background:var(--red-bg);color:#f07060}
+.cal-event.upcoming{background:var(--gold-bg);color:var(--gold)}
+.cal-event.open{background:var(--green-bg);color:#6ddaa0}
+.timeline-list{display:grid;gap:8px;margin-top:1.5rem}
+.timeline-item{display:grid;grid-template-columns:100px 1fr;gap:1rem;align-items:start;padding:.75rem 1.25rem;background:var(--charcoal);border:1px solid var(--mid);border-radius:var(--r)}
+.timeline-date{font-size:11px;font-weight:700;color:var(--gold);text-align:right}
+.timeline-name{font-size:13px;font-weight:600;color:var(--white)}
+.timeline-amt{font-size:11px;color:var(--muted)}
+
+/* ── FUNDER CRM ── */
+.funder-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
+.funder-card{background:var(--charcoal);border:1px solid var(--mid);border-radius:var(--r);padding:1rem 1.25rem;transition:border-color .2s}
+.funder-card:hover{border-color:var(--gold)}
+.funder-avatar{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--font-d);font-size:18px;letter-spacing:.04em;color:var(--black);background:var(--gold);flex-shrink:0;margin-bottom:.75rem}
+.funder-name{font-size:14px;font-weight:600;color:var(--white);margin-bottom:2px}
+.funder-type{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:.5rem}
+.funder-contact{font-size:12px;color:var(--muted);margin-bottom:.5rem}
+.funder-status{font-size:10px;font-weight:700;letter-spacing:.08em;padding:3px 8px;border-radius:20px}
+.fs-cold{background:var(--graphite);color:var(--muted);border:1px solid var(--mid)}
+.fs-warm{background:var(--gold-bg);color:var(--gold);border:1px solid var(--gold-dim)}
+.fs-active{background:var(--green-bg);color:var(--green);border:1px solid rgba(74,158,106,.3)}
+.funder-notes{margin-top:.75rem;padding-top:.75rem;border-top:1px solid var(--mid);font-size:12px;color:var(--muted);font-style:italic}
+.funder-actions{display:flex;gap:6px;margin-top:.75rem;flex-wrap:wrap}
+
+/* ── VETERAN SPOTLIGHT ── */
+.veteran-hero{background:var(--charcoal);border:1px solid var(--gold-dim);border-radius:var(--r);padding:1.5rem;margin-bottom:1.5rem;position:relative;overflow:hidden}
+.veteran-hero::before{content:'';position:absolute;top:-60px;right:-60px;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,rgba(91,138,181,.15) 0%,transparent 70%);pointer-events:none}
+.veteran-badge{font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#7db3dc;display:flex;align-items:center;gap:6px;margin-bottom:.75rem}
+.veteran-badge::before{content:'★';font-size:14px}
+.veteran-hero h2{font-family:var(--font-d);font-size:clamp(26px,4vw,38px);letter-spacing:.04em;color:var(--white);margin-bottom:.5rem}
+.veteran-hero p{font-size:13px;font-weight:300;color:var(--light);max-width:600px;line-height:1.65;margin-bottom:1rem}
+.veteran-story{border-left:3px solid var(--blue);padding:.75rem 1rem;background:var(--blue-bg);border-radius:0 var(--r) var(--r) 0;font-size:13px;font-style:italic;color:var(--light);line-height:1.6;max-width:600px}
+
+/* ── HOW TO APPLY MODAL ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:1000;display:none;align-items:center;justify-content:center;padding:1rem}
+.modal-overlay.open{display:flex}
+.modal{background:var(--charcoal);border:1px solid var(--mid);border-radius:var(--r);width:100%;max-width:640px;max-height:90vh;overflow-y:auto}
+.modal-head{padding:1.25rem 1.5rem;border-bottom:1px solid var(--mid);display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;position:sticky;top:0;background:var(--charcoal)}
+.modal-head h2{font-family:var(--font-d);font-size:22px;letter-spacing:.04em;color:var(--white);line-height:1.2}
+.modal-close{background:var(--graphite);border:1px solid var(--mid);border-radius:var(--r);padding:6px 10px;cursor:pointer;color:var(--muted);font-size:16px;flex-shrink:0;transition:all .15s}
+.modal-close:hover{border-color:var(--gold);color:var(--gold)}
+.modal-body{padding:1.25rem 1.5rem}
+.step-list{display:grid;gap:.75rem}
+.step-item{display:flex;gap:.75rem;align-items:flex-start}
+.step-num{font-family:var(--font-d);font-size:22px;letter-spacing:.04em;color:var(--gold);line-height:1;flex-shrink:0;width:28px}
+.step-content h4{font-size:13px;font-weight:600;color:var(--white);margin-bottom:2px}
+.step-content p{font-size:12px;color:var(--muted);line-height:1.6}
+.modal-meta{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:1rem;padding-top:1rem;border-top:1px solid var(--mid)}
+.meta-box{background:var(--graphite);border:1px solid var(--mid);border-radius:var(--r);padding:.6rem .8rem}
+.meta-box-label{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:3px}
+.meta-box-val{font-size:13px;font-weight:600;color:var(--white)}
+
+/* ── EMAIL SIGNUP ── */
+.email-strip{background:var(--gold-bg);border:1px solid var(--gold-dim);border-radius:var(--r);padding:1rem 1.25rem;display:flex;align-items:center;gap:1rem;flex-wrap:wrap;margin-bottom:1.5rem}
+.email-strip-text{flex:1;min-width:200px}
+.email-strip-title{font-family:var(--font-d);font-size:18px;letter-spacing:.04em;color:var(--gold);margin-bottom:2px}
+.email-strip-sub{font-size:12px;color:var(--muted)}
+.email-input-row{display:flex;gap:8px;flex:1;min-width:240px}
+.email-input{background:var(--charcoal);border:1px solid var(--mid);border-radius:var(--r);padding:9px 14px;color:var(--white);font-size:13px;flex:1;outline:none}
+.email-input:focus{border-color:var(--gold)}
+
+/* ── EXPORT ── */
+.export-row{display:flex;gap:8px;margin-bottom:1.25rem;flex-wrap:wrap}
+
+/* ── EMPTY ── */
+.empty-state{text-align:center;padding:3rem;color:var(--muted);font-size:13px;background:var(--charcoal);border:1px solid var(--mid);border-radius:var(--r)}
+.empty-state .big{font-family:var(--font-d);font-size:36px;letter-spacing:.04em;color:var(--mid);margin-bottom:.5rem}
+
+/* ── RESPONSIVE ── */
+@media(max-width:700px){
+  .nav{padding:.5rem 1rem;gap:.75rem}
+  .page{padding:1rem}
+  .writer-layout{grid-template-columns:1fr}
+  .calendar-body,.calendar-grid-head{grid-template-columns:repeat(7,1fr)}
+  .cal-day{min-height:44px}
+  .modal-meta{grid-template-columns:1fr}
+  .stat-row{grid-template-columns:repeat(2,1fr)}
+}
+
+/* ── CONFETTI ── */
+.confetti-piece{position:fixed;width:10px;height:10px;border-radius:2px;pointer-events:none;z-index:9999;animation:confetti-fall 2.5s ease-in forwards}
+@keyframes confetti-fall{0%{transform:translateY(-20px) rotate(0deg);opacity:1}100%{transform:translateY(110vh) rotate(720deg);opacity:0}}
+
+/* ── FLOATING AI ADVISOR ── */
+.ai-advisor-fab{position:fixed;bottom:24px;right:24px;z-index:500;display:flex;flex-direction:column;align-items:flex-end;gap:10px}
+.ai-advisor-btn{background:var(--gold);color:var(--black);border:none;border-radius:50px;padding:12px 20px;font-family:var(--font-b);font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;box-shadow:0 4px 20px rgba(201,168,76,.4);transition:all .2s;display:flex;align-items:center;gap:8px;white-space:nowrap}
+.ai-advisor-btn:hover{background:var(--gold-bright);transform:translateY(-2px);box-shadow:0 6px 28px rgba(201,168,76,.5)}
+.ai-advisor-btn .fab-dot{width:8px;height:8px;border-radius:50%;background:var(--black);animation:pulse 1.5s infinite}
+.ai-advisor-panel{background:var(--charcoal);border:1px solid var(--gold-dim);border-radius:8px;width:340px;max-height:0;overflow:hidden;transition:max-height .35s ease,opacity .25s ease;opacity:0;box-shadow:0 8px 40px rgba(0,0,0,.6)}
+.ai-advisor-panel.open{max-height:500px;opacity:1}
+.ai-advisor-head{padding:1rem 1.25rem .75rem;border-bottom:1px solid var(--mid);display:flex;align-items:center;justify-content:space-between}
+.ai-advisor-head-title{font-family:var(--font-d);font-size:18px;letter-spacing:.04em;color:var(--gold)}
+.ai-advisor-body{padding:1rem 1.25rem;font-size:12px;color:var(--light);line-height:1.7;max-height:340px;overflow-y:auto}
+.ai-advisor-close{background:none;border:none;color:var(--muted);font-size:16px;cursor:pointer;padding:2px 6px}
+.ai-advisor-close:hover{color:var(--white)}
+
+/* ── TODAY'S FOCUS CARD ── */
+.focus-card{background:linear-gradient(135deg,rgba(201,168,76,.12) 0%,rgba(201,168,76,.04) 100%);border:1px solid var(--gold-dim);border-radius:var(--r);padding:1.1rem 1.4rem;margin-bottom:1.25rem;display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;flex-wrap:wrap}
+.focus-badge{font-size:9px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:.3rem}
+.focus-title{font-family:var(--font-d);font-size:19px;letter-spacing:.04em;color:var(--white);margin-bottom:.2rem}
+.focus-why{font-size:11px;color:var(--muted);line-height:1.55;max-width:480px}
+.focus-actions{display:flex;flex-direction:column;gap:6px;flex-shrink:0}
+
+/* ── PROGRESS RING ── */
+.progress-ring-wrap{display:flex;align-items:center;gap:1rem;background:var(--charcoal);border:1px solid var(--mid);border-radius:var(--r);padding:.9rem 1rem}
+.progress-ring-svg{flex-shrink:0}
+.progress-ring-label{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.progress-ring-val{font-family:var(--font-d);font-size:22px;letter-spacing:.04em;color:var(--gold);line-height:1}
+.progress-ring-sub{font-size:11px;color:var(--muted);margin-top:2px}
+
+/* ── DRAG AND DROP KANBAN ── */
+.tracker-item.dragging{opacity:.4;border-style:dashed}
+.tracker-items.drag-over{background:rgba(201,168,76,.06);border:1px dashed var(--gold-dim);border-radius:var(--r)}
+.tracker-item{user-select:none}
+
+/* ── LIVE COUNTDOWN ── */
+.live-clock{font-variant-numeric:tabular-nums}
+
+/* ── STAT COUNTER ANIMATION ── */
+.stat-n.counting{transition:none}
+
+/* ── TOP ACTION BANNER ── */
+.action-banner{background:var(--red-bg);border:1px solid rgba(192,80,80,.3);border-radius:var(--r);padding:.65rem 1.1rem;margin-bottom:1rem;display:flex;align-items:center;gap:.75rem;font-size:12px;animation:banner-pulse 2s ease-in-out infinite}
+@keyframes banner-pulse{0%,100%{border-color:rgba(192,80,80,.3)}50%{border-color:rgba(192,80,80,.7)}}
+.action-banner .ab-icon{font-size:18px;flex-shrink:0}
+.action-banner strong{color:var(--white)}
+.action-banner a{color:#f07060;font-weight:700;text-decoration:none}
+.action-banner a:hover{text-decoration:underline}
+
+
+/* ── USER MANUAL ── */
+.manual-hero{background:linear-gradient(135deg,rgba(201,168,76,.1) 0%,transparent 60%);border:1px solid var(--gold-dim);border-radius:var(--r);padding:2rem 2rem 1.75rem;margin-bottom:2rem;position:relative;overflow:hidden}
+.manual-hero::after{content:'📖';position:absolute;right:2rem;top:50%;transform:translateY(-50%);font-size:72px;opacity:.08}
+.manual-toc{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px;margin-bottom:2.5rem}
+.toc-item{background:var(--charcoal);border:1px solid var(--mid);border-radius:var(--r);padding:.75rem 1rem;cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:.6rem;text-decoration:none}
+.toc-item:hover{border-color:var(--gold);background:var(--gold-bg)}
+.toc-icon{font-size:18px;flex-shrink:0}
+.toc-label{font-size:12px;font-weight:600;color:var(--light)}
+.toc-desc{font-size:10px;color:var(--muted);margin-top:1px}
+.manual-section{margin-bottom:3rem;scroll-margin-top:80px}
+.manual-section-head{display:flex;align-items:center;gap:.75rem;margin-bottom:1.25rem;padding-bottom:.75rem;border-bottom:1px solid var(--mid)}
+.manual-section-icon{font-size:28px}
+.manual-section-title{font-family:var(--font-d);font-size:28px;letter-spacing:.04em;color:var(--white)}
+.manual-section-num{font-size:10px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);display:block;margin-bottom:2px}
+.manual-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px;margin-bottom:1.25rem}
+.manual-card{background:var(--charcoal);border:1px solid var(--mid);border-radius:var(--r);padding:1rem 1.25rem}
+.manual-card-title{font-size:13px;font-weight:700;color:var(--white);margin-bottom:.4rem;display:flex;align-items:center;gap:.4rem}
+.manual-card-body{font-size:12px;color:var(--muted);line-height:1.65}
+.manual-card.highlight{border-color:var(--gold-dim);background:var(--gold-bg)}
+.manual-card.highlight .manual-card-title{color:var(--gold)}
+.manual-step-list{display:grid;gap:.5rem;margin-top:.75rem}
+.manual-step{display:flex;gap:.75rem;align-items:flex-start;font-size:12px;color:var(--muted);line-height:1.6}
+.manual-step-n{font-family:var(--font-d);font-size:20px;color:var(--gold);line-height:1;flex-shrink:0;width:24px}
+.manual-tip{background:rgba(74,158,106,.08);border:1px solid rgba(74,158,106,.2);border-left:3px solid var(--green);border-radius:0 var(--r) var(--r) 0;padding:.65rem 1rem;font-size:12px;color:var(--light);line-height:1.6;margin:.75rem 0}
+.manual-tip strong{color:var(--green)}
+.manual-warn{background:var(--red-bg);border:1px solid rgba(192,80,80,.25);border-left:3px solid var(--red);border-radius:0 var(--r) var(--r) 0;padding:.65rem 1rem;font-size:12px;color:var(--light);line-height:1.6;margin:.75rem 0}
+.manual-warn strong{color:#f07060}
+.manual-pro{background:rgba(201,168,76,.07);border:1px solid var(--gold-dim);border-left:3px solid var(--gold);border-radius:0 var(--r) var(--r) 0;padding:.65rem 1rem;font-size:12px;color:var(--light);line-height:1.6;margin:.75rem 0}
+.manual-pro strong{color:var(--gold)}
+.hotkey-table{width:100%;border-collapse:collapse;font-size:12px;margin-top:.75rem}
+.hotkey-table th{text-align:left;font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);padding:.4rem .75rem;border-bottom:1px solid var(--mid)}
+.hotkey-table td{padding:.4rem .75rem;border-bottom:1px solid rgba(58,58,58,.5);color:var(--light);vertical-align:top}
+.hotkey-table tr:last-child td{border-bottom:none}
+.hotkey-table .kbd{display:inline-block;background:var(--graphite);border:1px solid var(--mid);border-radius:3px;padding:1px 7px;font-size:11px;font-family:monospace;color:var(--gold)}
+.manual-glossary{display:grid;gap:6px}
+.glossary-item{display:grid;grid-template-columns:140px 1fr;gap:.75rem;padding:.5rem .75rem;background:var(--charcoal);border:1px solid var(--mid);border-radius:var(--r);font-size:12px}
+.glossary-term{font-weight:700;color:var(--gold)}
+.glossary-def{color:var(--muted);line-height:1.5}
+.manual-search-wrap{margin-bottom:1.5rem}
+.manual-search{width:100%;background:var(--charcoal);border:1px solid var(--mid);border-radius:var(--r);padding:10px 16px;color:var(--white);font-size:13px;outline:none;transition:border-color .15s}
+.manual-search:focus{border-color:var(--gold)}
+.manual-search::placeholder{color:var(--muted)}
+.manual-section.hidden{display:none}
+.feature-badge{display:inline-flex;align-items:center;gap:4px;background:var(--gold-bg);border:1px solid var(--gold-dim);border-radius:20px;padding:2px 10px;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);margin-left:.5rem;vertical-align:middle}
+.feature-badge.new{background:rgba(74,158,106,.1);border-color:rgba(74,158,106,.3);color:var(--green)}
+.feature-badge.ai{background:rgba(74,126,181,.1);border-color:rgba(74,126,181,.3);color:#7db3dc}
+.manual-divider{height:1px;background:var(--mid);margin:2rem 0}
+.quick-start-card{background:linear-gradient(135deg,var(--charcoal),var(--graphite));border:1px solid var(--gold-dim);border-radius:var(--r);padding:1.5rem;margin-bottom:2rem}
+.quick-start-steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin-top:1rem}
+.qs-step{background:var(--black);border:1px solid var(--mid);border-radius:var(--r);padding:.9rem 1rem;text-align:center}
+.qs-step-num{font-family:var(--font-d);font-size:36px;color:var(--gold);letter-spacing:.04em;line-height:1}
+.qs-step-label{font-size:11px;font-weight:600;color:var(--white);margin-top:.25rem}
+.qs-step-sub{font-size:10px;color:var(--muted);margin-top:2px;line-height:1.4}
+.feature-matrix{width:100%;border-collapse:collapse;font-size:12px;margin-top:.75rem}
+.feature-matrix th{text-align:left;font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);padding:.5rem .75rem;border-bottom:1px solid var(--mid);background:var(--graphite)}
+.feature-matrix td{padding:.5rem .75rem;border-bottom:1px solid rgba(58,58,58,.5);color:var(--light);vertical-align:middle}
+.feature-matrix tr:hover td{background:var(--gold-bg)}
+.check{color:var(--green);font-size:14px}
+.cross{color:var(--red);font-size:14px}
+.manual-faq{display:grid;gap:8px}
+.faq-item{background:var(--charcoal);border:1px solid var(--mid);border-radius:var(--r);overflow:hidden}
+.faq-q{padding:.85rem 1.1rem;font-size:13px;font-weight:600;color:var(--white);cursor:pointer;display:flex;justify-content:space-between;align-items:center;user-select:none}
+.faq-q:hover{background:var(--gold-bg)}
+.faq-q .faq-arrow{color:var(--gold);transition:transform .2s;font-size:14px}
+.faq-a{max-height:0;overflow:hidden;transition:max-height .3s ease;font-size:12px;color:var(--muted);line-height:1.7}
+.faq-a.open{max-height:300px}
+.faq-a-inner{padding:.75rem 1.1rem 1rem}
+.print-only{display:none}
+@media print{
+  .nav,.ai-advisor-fab,.tab-btn:not(.active){display:none!important}
+  .page{display:block!important;max-width:100%}
+  .print-only{display:block}
+}
+
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-brand">I Am <span>Redemption</span></div>
+  <div class="nav-tabs">
+    <button class="tab-btn active" onclick="showPage('dashboard',this)">Dashboard</button>
+    <button class="tab-btn" onclick="showPage('tracker',this)">Tracker</button>
+    <button class="tab-btn" onclick="showPage('writer',this)">AI Writer</button>
+    <button class="tab-btn" onclick="showPage('calendar',this)">Calendar</button>
+    <button class="tab-btn" onclick="showPage('funders',this)">Funders</button>
+    <button class="tab-btn" onclick="showPage('veteran',this)">Veteran Grants</button>
+    <button class="tab-btn" onclick="showPage('manual',this)">📖 User Manual</button>
+  </div>
+  <div class="ai-status"><span class="ai-dot"></span> AI Ready</div>
+</nav>
+
+<!-- ═══════════════════════════════════════════════════════════
+     PAGE 1: DASHBOARD
+═══════════════════════════════════════════════════════════ -->
+<div class="page active" id="page-dashboard">
+
+  <!-- Email alert strip -->
+  <div style="max-width:1200px;margin:1.5rem auto 0;padding:0 1.5rem">
+    <div class="email-strip">
+      <div class="email-strip-text">
+        <div class="email-strip-title">Get Grant Alerts</div>
+        <div class="email-strip-sub">New opportunities matching I Am Redemption's mission, delivered to your inbox.</div>
+      </div>
+      <div class="email-input-row">
+        <input class="email-input" type="email" id="email-input" placeholder="your@email.com">
+        <button class="btn-gold" onclick="subscribeEmail()">Subscribe</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="page-dashboard-inner">
+
+  <!-- Today's Focus -->
+  <div id="focus-card-wrap"></div>
+
+  <!-- Urgent Action Banner -->
+  <div id="action-banner-wrap"></div>
+
+  <!-- Stats -->
+  <div class="stat-row">
+    <div class="stat-card"><div class="stat-n" id="d-total">40</div><div class="stat-l">Total Grants</div></div>
+    <div class="stat-card red"><div class="stat-n" id="d-urgent">2</div><div class="stat-l">Act Now</div></div>
+    <div class="stat-card blue"><div class="stat-n" id="d-saved">0</div><div class="stat-l">Saved</div></div>
+    <div class="stat-card green"><div class="stat-n" id="d-tracked">0</div><div class="stat-l">Tracked</div></div>
+    <div class="stat-card"><div class="stat-n" id="d-potential">$0</div><div class="stat-l">Potential Funding</div></div>
+    <div class="progress-ring-wrap">
+      <svg class="progress-ring-svg" width="52" height="52" viewBox="0 0 52 52">
+        <circle cx="26" cy="26" r="22" fill="none" stroke="#333" stroke-width="4"/>
+        <circle id="ring-circle" cx="26" cy="26" r="22" fill="none" stroke="var(--gold)" stroke-width="4"
+          stroke-dasharray="138.2" stroke-dashoffset="138.2" stroke-linecap="round"
+          transform="rotate(-90 26 26)" style="transition:stroke-dashoffset 1s ease"/>
+      </svg>
+      <div>
+        <div class="progress-ring-label">Pipeline Health</div>
+        <div class="progress-ring-val" id="ring-pct">0%</div>
+        <div class="progress-ring-sub" id="ring-sub">0 of 40 engaged</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- AI Search -->
+  <div class="ai-search-wrap">
+    <div class="ai-search-label">⚡ AI Grant Search — Search for new grants or ask questions about funding</div>
+    <div class="ai-search-row">
+      <input class="ai-search-input" id="ai-query" placeholder='e.g. "veteran recovery grants Texas 2026" or "faith-based reentry funding"' onkeydown="if(event.key==='Enter')runAISearch()">
+      <button class="btn-gold" id="ai-search-btn" onclick="runAISearch()">Search with AI</button>
+      <button class="btn-outline" onclick="refreshGrants()">↻ Refresh All</button>
+    </div>
+    <div id="ai-result"></div>
+  </div>
+
+  <!-- Filters -->
+  <div class="filter-row">
+    <select class="filter-select" id="f-region" onchange="renderGrants()">
+      <option value="all">All Regions</option>
+      <option value="Austin">Austin</option>
+      <option value="Texas">Texas</option>
+      <option value="National">National</option>
+    </select>
+    <select class="filter-select" id="f-type" onchange="renderGrants()">
+      <option value="all">All Types</option>
+      <option value="Federal">Federal</option>
+      <option value="Private Foundation">Private Foundation</option>
+      <option value="Community">Community</option>
+      <option value="Corporate">Corporate</option>
+    </select>
+    <select class="filter-select" id="f-deadline" onchange="renderGrants()">
+      <option value="all">All Deadlines</option>
+      <option value="Urgent">Urgent</option>
+      <option value="Upcoming">Upcoming</option>
+      <option value="Open/Rolling">Open / Rolling</option>
+    </select>
+    <select class="filter-select" id="f-focus" onchange="renderGrants()">
+      <option value="all">All Focus Areas</option>
+      <option value="addiction">Addiction Recovery</option>
+      <option value="reentry">Reentry</option>
+      <option value="trauma">Trauma / Mental Health</option>
+      <option value="veteran">Veteran</option>
+      <option value="housing">Housing</option>
+      <option value="workforce">Workforce</option>
+    </select>
+    <select class="filter-select" id="f-score" onchange="renderGrants()">
+      <option value="all">All Match Scores</option>
+      <option value="high">High Match (80%+)</option>
+      <option value="medium">Medium Match (60%+)</option>
+    </select>
+    <input class="search-box" id="g-search" placeholder="Search grants…" oninput="renderGrants()">
+  </div>
+
+  <div class="export-row">
+    <button class="btn-outline" onclick="exportCSV()">↓ Export CSV</button>
+    <button class="btn-outline" onclick="exportPDF()">↓ Export PDF</button>
+    <span style="font-size:11px;color:var(--muted);align-self:center" id="results-count"></span>
+  </div>
+
+  <div class="grants-grid" id="grants-grid"></div>
+  <div class="empty-state" id="no-results" style="display:none">
+    <div class="big">No Results</div>
+    Try adjusting your filters or use AI Search above to find new opportunities.
+  </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     PAGE 2: TRACKER
+═══════════════════════════════════════════════════════════ -->
+<div class="page" id="page-tracker">
+  <div class="section-head">
+    <div class="section-eyebrow">02/ Grant Management</div>
+    <div class="section-title">Application Tracker</div>
+    <div class="section-sub">Move grants through your pipeline — from prospect to award.</div>
+  </div>
+
+  <div class="tracker-grid" id="tracker-board">
+    <!-- rendered by JS -->
+  </div>
+
+  <div style="background:var(--charcoal);border:1px solid var(--mid);border-radius:var(--r);padding:1rem 1.25rem">
+    <div style="font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:.75rem">Add Notes to a Grant</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <select class="filter-select" id="note-grant" style="flex:1;min-width:180px" onchange="renderNotes()"></select>
+      <input class="search-box" id="note-text" placeholder="Add a note or contact update…" style="flex:2;min-width:220px" onkeydown="if(event.key==='Enter')addNote()">
+      <button class="btn-gold" onclick="addNote()">Add Note</button>
+    </div>
+    <div id="notes-display" style="margin-top:.75rem;display:grid;gap:6px"></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     PAGE 3: AI WRITER
+═══════════════════════════════════════════════════════════ -->
+<div class="page" id="page-writer">
+  <div class="section-head">
+    <div class="section-eyebrow">03/ AI Tools</div>
+    <div class="section-title">Grant Writer Assistant</div>
+    <div class="section-sub">AI-powered narrative drafting tailored to I Am Redemption's mission and story.</div>
+  </div>
+
+  <div class="writer-layout">
+    <div class="writer-panel">
+      <h3>Draft Settings</h3>
+      <div style="font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin-bottom:.4rem">Select Grant</div>
+      <select class="writer-select" id="writer-grant"></select>
+
+      <div style="font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin-bottom:.4rem;margin-top:.75rem">Narrative Type</div>
+      <select class="writer-select" id="writer-type">
+        <option value="executive">Executive Summary</option>
+        <option value="need">Statement of Need</option>
+        <option value="program">Program Description</option>
+        <option value="impact">Expected Impact & Outcomes</option>
+        <option value="budget">Budget Narrative</option>
+        <option value="org">Organizational Capacity</option>
+        <option value="veteran">Veteran Angle / Founder Story</option>
+        <option value="loi">Letter of Inquiry (LOI)</option>
+      </select>
+
+      <div style="font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin-bottom:.4rem;margin-top:.75rem">Additional Context (optional)</div>
+      <textarea class="writer-textarea" id="writer-context" placeholder="Add any specific details, stats, program names, dollar amounts, or requirements from the funder RFP…"></textarea>
+
+      <div class="writer-actions">
+        <button class="btn-gold" id="writer-btn" onclick="runWriter()">Generate Draft</button>
+        <button class="btn-outline" onclick="document.getElementById('writer-output').value=''">Clear</button>
+      </div>
+    </div>
+
+    <div class="writer-panel">
+      <h3>Generated Narrative</h3>
+      <textarea class="writer-output" id="writer-output" placeholder="Your AI-generated grant narrative will appear here. You can edit it directly after generation…"></textarea>
+      <div class="writer-actions">
+        <button class="btn-outline" onclick="copyWriter()">Copy Text</button>
+        <button class="btn-outline" onclick="refineWriter()">✦ Refine with AI</button>
+      </div>
+      <div id="writer-result"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     PAGE 4: CALENDAR
+═══════════════════════════════════════════════════════════ -->
+<div class="page" id="page-calendar">
+  <div class="section-head">
+    <div class="section-eyebrow">04/ Timeline</div>
+    <div class="section-title">Deadline Calendar</div>
+    <div class="section-sub">All grant deadlines visualized — never miss an opportunity.</div>
+  </div>
+
+  <div class="calendar-wrap">
+    <div class="calendar-head">
+      <div class="calendar-title" id="cal-month-label"></div>
+      <div class="calendar-nav" style="display:flex;gap:6px">
+        <button onclick="changeMonth(-1)">‹</button>
+        <button onclick="changeMonth(1)">›</button>
+      </div>
+    </div>
+    <div class="calendar-grid-head">
+      <div class="cal-day-label">Sun</div><div class="cal-day-label">Mon</div>
+      <div class="cal-day-label">Tue</div><div class="cal-day-label">Wed</div>
+      <div class="cal-day-label">Thu</div><div class="cal-day-label">Fri</div>
+      <div class="cal-day-label">Sat</div>
+    </div>
+    <div class="calendar-body" id="cal-body"></div>
+  </div>
+
+  <div style="font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:.75rem">Upcoming Deadlines — Timeline View</div>
+  <div class="timeline-list" id="timeline-list"></div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     PAGE 5: FUNDERS
+═══════════════════════════════════════════════════════════ -->
+<div class="page" id="page-funders">
+  <div class="section-head">
+    <div class="section-eyebrow">05/ Relationship Management</div>
+    <div class="section-title">Funder Tracker</div>
+    <div class="section-sub">Track relationships with program officers and foundation contacts.</div>
+  </div>
+
+  <div style="display:flex;gap:8px;margin-bottom:1.25rem;flex-wrap:wrap">
+    <select class="filter-select" id="funder-status-filter" onchange="renderFunders()">
+      <option value="all">All Relationships</option>
+      <option value="Cold">Cold</option>
+      <option value="Warm">Warm</option>
+      <option value="Active">Active</option>
+    </select>
+    <input class="search-box" id="funder-search" placeholder="Search funders…" oninput="renderFunders()">
+  </div>
+
+  <div class="funder-grid" id="funder-grid"></div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     PAGE 6: VETERAN SPOTLIGHT
+═══════════════════════════════════════════════════════════ -->
+<div class="page" id="page-veteran">
+  <div class="section-head">
+    <div class="section-eyebrow">06/ Mission Alignment</div>
+    <div class="section-title">Veteran Grant Spotlight</div>
+    <div class="section-sub">Funding specifically aligned with Shawn Livingston's story and IAR's veteran community.</div>
+  </div>
+
+  <div class="veteran-hero">
+    <div class="veteran-badge">Veteran-Aligned Funding</div>
+    <h2>From Combat to Community</h2>
+    <p>Shawn Livingston's journey — combat veteran, heroin addiction survivor, ultra runner, founder — is one of the most compelling grant narratives in the recovery space. These funders specifically prioritize veteran-led or veteran-serving organizations.</p>
+    <div class="veteran-story">"Sobriety didn't just save Shawn's life — it reshaped it. Today he channels the same mental resilience that carried him through recovery into everything he does." — I Am Redemption</div>
+  </div>
+
+  <div style="font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:.75rem">Why the Veteran Angle Unlocks More Funding</div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin-bottom:1.5rem">
+    <div style="background:var(--charcoal);border:1px solid var(--mid);border-radius:var(--r);padding:.9rem 1rem">
+      <div style="font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--blue);margin-bottom:.3rem">Unique Founder Story</div>
+      <div style="font-size:12px;color:var(--muted);line-height:1.6">Combat veteran + addiction + recovery + 100-mile ultra run. This narrative exceeds any standard nonprofit story funders read. Document it quantitatively.</div>
+    </div>
+    <div style="background:var(--charcoal);border:1px solid var(--mid);border-radius:var(--r);padding:.9rem 1rem">
+      <div style="font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--blue);margin-bottom:.3rem">Dual Eligibility</div>
+      <div style="font-size:12px;color:var(--muted);line-height:1.6">IAR qualifies for both veteran-specific grants AND general addiction/reentry grants — doubling the addressable funding pool compared to single-focus nonprofits.</div>
+    </div>
+    <div style="background:var(--charcoal);border:1px solid var(--mid);border-radius:var(--r);padding:.9rem 1rem">
+      <div style="font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--blue);margin-bottom:.3rem">Corporate Priority</div>
+      <div style="font-size:12px;color:var(--muted);line-height:1.6">Wells Fargo, Bank of America, USAA, and many Fortune 500 companies have explicit veteran giving mandates. Military service is often the fastest path to corporate grant relationships.</div>
+    </div>
+  </div>
+
+  <div class="grants-grid" id="veteran-grants-grid"></div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     PAGE 7: USER MANUAL
+═══════════════════════════════════════════════════════════ -->
+<div class="page" id="page-manual">
+  <div class="section-head">
+    <div class="section-eyebrow">07/ Documentation</div>
+    <div class="section-title">User Manual</div>
+    <div class="section-sub">Everything you need to run a world-class grant operation for I Am Redemption.</div>
+  </div>
+  <div class="manual-hero">
+    <div style="font-size:10px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:.5rem">Grant Command Center v2.0</div>
+    <div style="font-family:var(--font-d);font-size:clamp(22px,3vw,34px);letter-spacing:.04em;color:var(--white);margin-bottom:.5rem">Built for I Am Redemption</div>
+    <div style="font-size:13px;color:var(--muted);max-width:580px;line-height:1.65">This platform was purpose-built to help Shawn Livingston and the IAR team find, track, write, and win grants. Every feature is designed around your mission, your story, and your funding goals.</div>
+    <div style="display:flex;gap:1.5rem;margin-top:1.1rem;flex-wrap:wrap;font-size:12px">
+      <span style="color:var(--muted)">&#x1F4C5; Last Updated: <strong style="color:var(--white)">March 2026</strong></span>
+      <span style="color:var(--muted)">&#x1F3AF; Grants in Database: <strong style="color:var(--gold)">40</strong></span>
+      <span style="color:var(--muted)">&#x1F916; AI Features: <strong style="color:#7db3dc">5 Active</strong></span>
+    </div>
+  </div>
+  <div class="manual-search-wrap">
+    <input class="manual-search" id="manual-search" placeholder="Search the manual... (e.g. 'how to export' or 'drag and drop')" oninput="searchManual(this.value)">
+  </div>
+  <div class="quick-start-card" id="manual-quickstart">
+    <div style="font-size:10px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:.3rem">New Here?</div>
+    <div style="font-family:var(--font-d);font-size:22px;letter-spacing:.04em;color:var(--white)">Quick Start — Be Operational in 10 Minutes</div>
+    <div class="quick-start-steps">
+      <div class="qs-step"><div class="qs-step-num">01</div><div class="qs-step-label">Browse Grants</div><div class="qs-step-sub">Dashboard tab, scroll 40 curated grants sorted by match score</div></div>
+      <div class="qs-step"><div class="qs-step-num">02</div><div class="qs-step-label">Save Top Picks</div><div class="qs-step-sub">Click Save on any card to move it into your Tracker pipeline</div></div>
+      <div class="qs-step"><div class="qs-step-num">03</div><div class="qs-step-label">Read How to Apply</div><div class="qs-step-sub">Click any card for step-by-step application instructions + Pro Tip</div></div>
+      <div class="qs-step"><div class="qs-step-num">04</div><div class="qs-step-label">Draft Narrative</div><div class="qs-step-sub">AI Writer tab, select grant, generate a complete tailored narrative in seconds</div></div>
+      <div class="qs-step"><div class="qs-step-num">05</div><div class="qs-step-label">Ask the Advisor</div><div class="qs-step-sub">Click "What Should I Do Today?" bottom-right for your daily AI action plan</div></div>
+    </div>
+  </div>
+  <div id="manual-toc" style="margin-bottom:2rem">
+    <div style="font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:.75rem">Jump to Section</div>
+    <div class="manual-toc">
+      <a class="toc-item" href="#" onclick="event.preventDefault();scrollToSection('sec-dashboard')"><span class="toc-icon">&#x1F4CA;</span><div><div class="toc-label">Dashboard</div><div class="toc-desc">Grants, filters, AI search</div></div></a>
+      <a class="toc-item" href="#" onclick="event.preventDefault();scrollToSection('sec-tracker')"><span class="toc-icon">&#x1F4CB;</span><div><div class="toc-label">Tracker</div><div class="toc-desc">Pipeline &amp; drag-drop Kanban</div></div></a>
+      <a class="toc-item" href="#" onclick="event.preventDefault();scrollToSection('sec-writer')"><span class="toc-icon">&#x270D;&#xFE0F;</span><div><div class="toc-label">AI Writer</div><div class="toc-desc">Generate grant narratives</div></div></a>
+      <a class="toc-item" href="#" onclick="event.preventDefault();scrollToSection('sec-calendar')"><span class="toc-icon">&#x1F4C5;</span><div><div class="toc-label">Calendar</div><div class="toc-desc">Deadlines &amp; timeline view</div></div></a>
+      <a class="toc-item" href="#" onclick="event.preventDefault();scrollToSection('sec-funders')"><span class="toc-icon">&#x1F91D;</span><div><div class="toc-label">Funders CRM</div><div class="toc-desc">Relationship management</div></div></a>
+      <a class="toc-item" href="#" onclick="event.preventDefault();scrollToSection('sec-veteran')"><span class="toc-icon">&#x2B50;</span><div><div class="toc-label">Veteran Grants</div><div class="toc-desc">Shawn's unique advantage</div></div></a>
+      <a class="toc-item" href="#" onclick="event.preventDefault();scrollToSection('sec-ai')"><span class="toc-icon">&#x1F916;</span><div><div class="toc-label">AI Features</div><div class="toc-desc">All 5 AI tools explained</div></div></a>
+      <a class="toc-item" href="#" onclick="event.preventDefault();scrollToSection('sec-strategy')"><span class="toc-icon">&#x1F3AF;</span><div><div class="toc-label">Grant Strategy</div><div class="toc-desc">How to win, not just apply</div></div></a>
+      <a class="toc-item" href="#" onclick="event.preventDefault();scrollToSection('sec-export')"><span class="toc-icon">&#x1F4E4;</span><div><div class="toc-label">Export &amp; Reports</div><div class="toc-desc">CSV, PDF, data export</div></div></a>
+      <a class="toc-item" href="#" onclick="event.preventDefault();scrollToSection('sec-faq')"><span class="toc-icon">&#x2753;</span><div><div class="toc-label">FAQ</div><div class="toc-desc">Common questions answered</div></div></a>
+      <a class="toc-item" href="#" onclick="event.preventDefault();scrollToSection('sec-glossary')"><span class="toc-icon">&#x1F4DA;</span><div><div class="toc-label">Glossary</div><div class="toc-desc">Grant terms defined</div></div></a>
+      <a class="toc-item" href="#" onclick="event.preventDefault();scrollToSection('sec-tips')"><span class="toc-icon">&#x1F4A1;</span><div><div class="toc-label">Pro Tips</div><div class="toc-desc">Power user secrets</div></div></a>
+    </div>
+  </div>
+
+  <!-- SEC DASHBOARD -->
+  <div class="manual-section" id="sec-dashboard">
+    <div class="manual-section-head"><div class="manual-section-icon">&#x1F4CA;</div><div><span class="manual-section-num">Section 01</span><div class="manual-section-title">Dashboard</div></div></div>
+    <div class="manual-grid">
+      <div class="manual-card highlight"><div class="manual-card-title">&#x2B50; Today's Top Priority</div><div class="manual-card-body">Every session, the platform auto-selects the single highest-value grant you haven't engaged — factoring urgency, match score, and pipeline status. One click opens full How-to-Apply instructions.</div></div>
+      <div class="manual-card highlight"><div class="manual-card-title">&#x26A1; Urgent Deadline Banner</div><div class="manual-card-body">If any grant has a deadline within 14 days, a pulsing red alert appears automatically. It names the grant, shows days remaining, and links directly to the application page.</div></div>
+      <div class="manual-card"><div class="manual-card-title">&#x1F4C8; Animated Stat Cards</div><div class="manual-card-body">Five counters animate on every load: Total Grants, Act Now (urgent), Saved, Tracked, and Potential Funding from your saved grants.</div></div>
+      <div class="manual-card"><div class="manual-card-title">&#x1F535; Pipeline Health Ring</div><div class="manual-card-body">Circular progress indicator shows % of 40 grants engaged. Red = under 25%, Gold = 25-50%, Green = 50%+. Updates automatically as you work your pipeline.</div></div>
+      <div class="manual-card"><div class="manual-card-title">&#x1F50D; Grant Cards</div><div class="manual-card-body">Each card shows name, region/type/deadline badges, match score bar, description, the gold "Why It Fits IAR" blurb, and a deadline countdown. Click anywhere to open the full How-to-Apply modal.</div></div>
+      <div class="manual-card"><div class="manual-card-title">&#x1F39B;&#xFE0F; Filters</div><div class="manual-card-body">Filter by Region, Type, Deadline status, Focus Area, and Match Score. All filters stack live. Use the search box to find any grant by name or description keyword.</div></div>
+    </div>
+    <div class="manual-tip"><strong>Pro Tip:</strong> Start every session by reading Today's Top Priority and the Urgent Banner. These two elements alone will keep IAR's grant operation on track.</div>
+  </div>
+  <div class="manual-divider"></div>
+
+  <!-- SEC TRACKER -->
+  <div class="manual-section" id="sec-tracker">
+    <div class="manual-section-head"><div class="manual-section-icon">&#x1F4CB;</div><div><span class="manual-section-num">Section 02</span><div class="manual-section-title">Application Tracker</div></div></div>
+    <div class="manual-grid">
+      <div class="manual-card"><div class="manual-card-title">&#x1F4CC; Pipeline Columns</div><div class="manual-card-body"><strong style="color:var(--muted)">Prospecting</strong> — Saved, not yet applied. <strong style="color:var(--blue)">Applied</strong> — Submitted, awaiting response. <strong style="color:var(--gold)">In Progress</strong> — Active funder conversation. <strong style="color:var(--green)">Awarded</strong> — Grant won (triggers confetti!). <strong style="color:var(--red)">Declined</strong> — Not funded this cycle; note feedback and reapply next cycle.</div></div>
+      <div class="manual-card"><div class="manual-card-title">&#x1F5B1;&#xFE0F; Drag-and-Drop <span class="feature-badge new">New</span></div><div class="manual-card-body">Grab any grant card and drag it to a new column. The column glows gold when ready to accept. Drop to update status instantly — it saves automatically. Moving to Awarded fires gold confetti across the screen.</div></div>
+      <div class="manual-card"><div class="manual-card-title">&#x1F4DD; Notes Panel</div><div class="manual-card-body">Below the board, select any grant and type a timestamped note — contact made, site visit date, conversation summary. Notes stack chronologically and help you remember every funder interaction.</div></div>
+    </div>
+    <div class="manual-warn"><strong>Important:</strong> Tracker data lives in your browser's localStorage. Export CSV regularly to preserve your pipeline. Do not clear browser data without exporting first.</div>
+  </div>
+  <div class="manual-divider"></div>
+
+  <!-- SEC WRITER -->
+  <div class="manual-section" id="sec-writer">
+    <div class="manual-section-head"><div class="manual-section-icon">&#x270D;&#xFE0F;</div><div><span class="manual-section-num">Section 03</span><div class="manual-section-title">AI Grant Writer</div></div></div>
+    <div class="manual-grid">
+      <div class="manual-card"><div class="manual-card-title">&#x1F4C4; 8 Narrative Types</div><div class="manual-card-body">Executive Summary &bull; Statement of Need &bull; Program Description &bull; Expected Impact &amp; Outcomes &bull; Budget Narrative &bull; Organizational Capacity &bull; Veteran Angle / Founder Story &bull; Letter of Inquiry (LOI). Each is 350-500 words, tailored to the specific funder.</div></div>
+      <div class="manual-card"><div class="manual-card-title">&#x2699;&#xFE0F; How It Works</div><div class="manual-card-body">Select a grant, choose narrative type, optionally paste RFP language into Additional Context, click Generate. Takes 10-20 seconds. Edit the output directly, then hit Refine with AI to polish your edits. Copy and paste into your application.</div></div>
+    </div>
+    <div class="manual-tip"><strong>Power move:</strong> Paste specific funder language from their RFP into Additional Context before generating — the AI will hit their exact keywords and priorities.</div>
+    <div class="manual-tip"><strong>Shortcut:</strong> Inside any How-to-Apply modal, click "Draft Narrative" to auto-select that grant in the Writer and switch tabs.</div>
+  </div>
+  <div class="manual-divider"></div>
+
+  <!-- SEC CALENDAR -->
+  <div class="manual-section" id="sec-calendar">
+    <div class="manual-section-head"><div class="manual-section-icon">&#x1F4C5;</div><div><span class="manual-section-num">Section 04</span><div class="manual-section-title">Deadline Calendar</div></div></div>
+    <div class="manual-grid">
+      <div class="manual-card"><div class="manual-card-title">&#x1F5D3;&#xFE0F; Monthly View</div><div class="manual-card-body">Grants with specific deadlines appear as color-coded events — red for urgent (7 days or less), gold for upcoming, green for rolling. Navigate months with the arrow buttons.</div></div>
+      <div class="manual-card"><div class="manual-card-title">&#x1F4CB; Timeline View</div><div class="manual-card-body">Below the calendar, the next 12 upcoming grant deadlines appear chronologically with name, amount, type, and region. Best view for planning the next 3-6 months of grant activity.</div></div>
+    </div>
+    <div class="manual-tip"><strong>Strategy:</strong> Check the Calendar at the start of each month. Any deadline in the next 60 days gets moved to "In Progress" in the Tracker — then start drafting narratives immediately.</div>
+  </div>
+  <div class="manual-divider"></div>
+
+  <!-- SEC FUNDERS -->
+  <div class="manual-section" id="sec-funders">
+    <div class="manual-section-head"><div class="manual-section-icon">&#x1F91D;</div><div><span class="manual-section-num">Section 05</span><div class="manual-section-title">Funders CRM</div></div></div>
+    <div class="manual-grid">
+      <div class="manual-card"><div class="manual-card-title">&#x1F321;&#xFE0F; Relationship Status</div><div class="manual-card-body"><strong style="color:var(--muted)">Cold</strong> — No contact yet. <strong style="color:var(--gold)">Warm</strong> — Initial contact made. <strong style="color:var(--green)">Active</strong> — Ongoing dialogue or site visit scheduled. Click "Mark Warm" to cycle status forward. This is your funder relationship pipeline.</div></div>
+      <div class="manual-card"><div class="manual-card-title">&#x1F4DE; Why Relationships Win</div><div class="manual-card-body">A 15-minute call with a program officer before you apply dramatically increases success rates. Ask: "Are we a fit? What would strengthen our application?" Foundation program officers will tell you exactly what they want to see.</div></div>
+    </div>
+    <div class="manual-tip"><strong>Best practice:</strong> Log every email, call, and meeting in the Tracker Notes panel. Relationship-based funders fund organizations they know — your interaction history is part of your application.</div>
+  </div>
+  <div class="manual-divider"></div>
+
+  <!-- SEC VETERAN -->
+  <div class="manual-section" id="sec-veteran">
+    <div class="manual-section-head"><div class="manual-section-icon">&#x2B50;</div><div><span class="manual-section-num">Section 06</span><div class="manual-section-title">Veteran Grant Spotlight</div></div></div>
+    <div class="manual-card" style="margin-bottom:1rem"><div class="manual-card-title">&#x1F396;&#xFE0F; Why the Veteran Angle Doubles Your Market</div><div class="manual-card-body">Most addiction/reentry nonprofits cannot access veteran-specific funding. IAR can — because Shawn is a combat veteran. Wells Fargo ($64M+ to veteran nonprofits), USAA Foundation (exclusively veteran-focused), and BAE Systems all have programs inaccessible to non-veteran-led orgs. Less competition, higher alignment, and a story no other applicant can match.</div></div>
+    <div class="manual-pro"><strong>★ Strategic Note:</strong> Always mention Shawn's military service in the founder bio of every application — not just veteran-specific ones. Many reviewers weight veteran leadership positively even when it isn't a stated criterion.</div>
+  </div>
+  <div class="manual-divider"></div>
+
+  <!-- SEC AI -->
+  <div class="manual-section" id="sec-ai">
+    <div class="manual-section-head"><div class="manual-section-icon">&#x1F916;</div><div><span class="manual-section-num">Section 07</span><div class="manual-section-title">AI Features — Powered by Claude</div></div></div>
+    <table class="feature-matrix">
+      <thead><tr><th>Feature</th><th>Where</th><th>What It Does</th><th>When to Use</th></tr></thead>
+      <tbody>
+        <tr><td><strong>AI Grant Search</strong></td><td>Dashboard</td><td>Finds 4-6 real grants matching any query, with + Add to Tracker buttons on results</td><td>Exploring new categories or funding types</td></tr>
+        <tr><td><strong>Refresh All</strong></td><td>Dashboard</td><td>Returns 5 best currently-open grants for IAR, fresh every time</td><td>Weekly pipeline refresh</td></tr>
+        <tr><td><strong>AI Grant Writer</strong></td><td>Writer tab</td><td>Generates 350-500 word narratives in 8 formats, tailored to each funder</td><td>Before every application</td></tr>
+        <tr><td><strong>Refine with AI</strong></td><td>Writer tab</td><td>Polishes your edited draft — more compelling, specific, emotionally resonant</td><td>After editing the first draft</td></tr>
+        <tr><td><strong>Priority Advisor</strong></td><td>Floating button</td><td>Analyzes your real pipeline and returns a personalized 5-bullet action plan for today</td><td>Every morning</td></tr>
+      </tbody>
+    </table>
+    <div class="manual-warn"><strong>Note on AI accuracy:</strong> Always verify grant details, deadlines, and URLs on the funder's official website. Use AI results as leads to investigate, not confirmed facts.</div>
+  </div>
+  <div class="manual-divider"></div>
+
+  <!-- SEC STRATEGY -->
+  <div class="manual-section" id="sec-strategy">
+    <div class="manual-section-head"><div class="manual-section-icon">&#x1F3AF;</div><div><span class="manual-section-num">Section 08</span><div class="manual-section-title">Grant Strategy for IAR</div></div></div>
+    <div class="manual-grid">
+      <div class="manual-card highlight"><div class="manual-card-title">&#x1F3C6; The 3-Tier Funding Strategy</div><div class="manual-card-body"><strong style="color:var(--white)">Tier 1 — Quick Wins (apply now):</strong> Gupta Family Foundation, Peter G. Dodge TAPs, ACF Community Grants, Smithers Foundation. Rolling deadlines, strong mission match, apply this month to build your track record.<br><br><strong style="color:var(--white)">Tier 2 — Mid-Tier (3-6 months):</strong> Meadows Foundation, Hogg Foundation, RWJF. Relationship-based. Start LOIs now, cultivate over months.<br><br><strong style="color:var(--white)">Tier 3 — Transformational (6-18 months):</strong> Second Chance Act, MacArthur, DRK Foundation. Require track record + partnerships. Build toward these.</div></div>
+      <div class="manual-card highlight"><div class="manual-card-title">&#x1F4D6; Shawn's Story Is the Weapon</div><div class="manual-card-body">Combat veteran. Heroin addiction survivor. 100-mile ultra runner. Author. Founder. No grant writer can manufacture what Shawn has lived. Every application that leads with specific, concrete story moments outperforms one that leads with program statistics. Funders remember stories. They forget bullet points.</div></div>
+      <div class="manual-card"><div class="manual-card-title">&#x1F4CA; Build Outcomes Data Now</div><div class="manual-card-body">The fastest way to improve every application: start tracking measurable outcomes today. People served per month, 30/60/90-day sobriety retention, employment placements, housing. Even 6 months of data transforms "we believe" into "we've proven."</div></div>
+      <div class="manual-card"><div class="manual-card-title">&#x1F504; Rejection Is a Cycle, Not a No</div><div class="manual-card-body">Most major grants require 2-3 application cycles before funding. Always request feedback when declined, incorporate it, and reapply. Log every rejection note in the Tracker. The organizations that keep applying are the ones that eventually get funded.</div></div>
+    </div>
+    <div class="manual-tip"><strong>Velocity matters:</strong> Aim for at least one LOI, application, or funder contact per week. Grant funding rewards consistent applicants — the organizations applying regularly are the ones getting funded regularly.</div>
+  </div>
+  <div class="manual-divider"></div>
+
+  <!-- SEC EXPORT -->
+  <div class="manual-section" id="sec-export">
+    <div class="manual-section-head"><div class="manual-section-icon">&#x1F4E4;</div><div><span class="manual-section-num">Section 09</span><div class="manual-section-title">Export &amp; Reports</div></div></div>
+    <div class="manual-grid">
+      <div class="manual-card"><div class="manual-card-title">&#x1F4CA; Export CSV</div><div class="manual-card-body">Downloads the full 40-grant database as a spreadsheet — name, region, type, deadline, amount, match score, URL, focus areas. Find it on the Dashboard above the grant list. Use it for board presentations, bookkeeper sharing, or importing into another system.</div></div>
+      <div class="manual-card"><div class="manual-card-title">&#x1F5A8;&#xFE0F; Export PDF</div><div class="manual-card-body">Triggers your browser's print dialog. Choose "Save as PDF" for a clean snapshot of your dashboard. Use for board meetings, partner presentations, and grant progress reports. The print layout is optimized for clean output.</div></div>
+    </div>
+    <div class="manual-tip"><strong>Board reporting:</strong> Before every board meeting, export CSV, filter to tracked grants in a spreadsheet, and share as your pipeline report. A 5-minute task that looks like 2 hours of work.</div>
+  </div>
+  <div class="manual-divider"></div>
+
+  <!-- SEC FAQ -->
+  <div class="manual-section" id="sec-faq">
+    <div class="manual-section-head"><div class="manual-section-icon">&#x2753;</div><div><span class="manual-section-num">Section 10</span><div class="manual-section-title">Frequently Asked Questions</div></div></div>
+    <div class="manual-faq">
+      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">How do I add a grant the AI found to my tracker? <span class="faq-arrow">&#x25BE;</span></div><div class="faq-a"><div class="faq-a-inner">Run an AI Grant Search and click the "+ Add to Tracker" button next to each result's name. If the grant is already in the database it saves to Prospecting. If it's new it creates an entry and adds it — move it through the pipeline like any other grant.</div></div></div>
+      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">My tracker data disappeared — how do I get it back? <span class="faq-arrow">&#x25BE;</span></div><div class="faq-a"><div class="faq-a-inner">Tracker data is saved in your browser's localStorage. If you cleared your cache, switched browsers, or used private/incognito mode, the data won't appear. Export CSV after every session where you make changes to preserve your work.</div></div></div>
+      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">How accurate are the match scores? <span class="faq-arrow">&#x25BE;</span></div><div class="faq-a"><div class="faq-a-inner">Match scores are editorial estimates — how closely each funder's priorities align with IAR's mission and Shawn's background. Not algorithmically computed. Use them as directional guidance: 90%+ is exceptional, 70-80% is strong, below 70% is worth monitoring but not a priority application.</div></div></div>
+      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">The AI Writer doesn't sound like us. What do I do? <span class="faq-arrow">&#x25BE;</span></div><div class="faq-a"><div class="faq-a-inner">Edit the draft directly in the text area — it's fully editable. Then click "Refine with AI" and your edited version becomes the input. Also add specific IAR language, program stats, or RFP keywords into Additional Context before generating to dramatically personalize the output.</div></div></div>
+      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">What does Open/Rolling mean? <span class="faq-arrow">&#x25BE;</span></div><div class="faq-a"><div class="faq-a-inner">Open/Rolling means the funder accepts applications year-round with no specific deadline — typically reviewed quarterly. Great for IAR because you can apply any time. Earlier submissions in a quarter get reviewed sooner since board meetings are typically March, June, September, December.</div></div></div>
+      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Can I use this on mobile? <span class="faq-arrow">&#x25BE;</span></div><div class="faq-a"><div class="faq-a-inner">Yes — the platform is responsive and works on phones and tablets. Drag-and-drop Kanban works better on desktop. On mobile, tap a tracker card to cycle its status forward instead of dragging.</div></div></div>
+      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">How do I use the Priority Advisor? <span class="faq-arrow">&#x25BE;</span></div><div class="faq-a"><div class="faq-a-inner">Click the gold "What Should I Do Today?" button in the bottom-right corner. A panel slides open and Claude analyzes your saved grants, tracked applications, and urgent deadlines to produce a personalized 5-bullet action plan. The advice refreshes as your pipeline changes.</div></div></div>
+    </div>
+  </div>
+  <div class="manual-divider"></div>
+
+  <!-- SEC GLOSSARY -->
+  <div class="manual-section" id="sec-glossary">
+    <div class="manual-section-head"><div class="manual-section-icon">&#x1F4DA;</div><div><span class="manual-section-num">Section 11</span><div class="manual-section-title">Grant Glossary</div></div></div>
+    <div class="manual-glossary">
+      <div class="glossary-item"><div class="glossary-term">LOI</div><div class="glossary-def">Letter of Inquiry — a 1-3 page pre-application letter many foundations require before inviting a full proposal. Your first date before a full relationship.</div></div>
+      <div class="glossary-item"><div class="glossary-term">NOFO</div><div class="glossary-def">Notice of Funding Opportunity — the federal government's official announcement that a grant program is accepting applications. Published at grants.gov.</div></div>
+      <div class="glossary-item"><div class="glossary-term">RFP</div><div class="glossary-def">Request for Proposals — similar to NOFO, used by foundations and government agencies to formally invite grant applications for a specific program.</div></div>
+      <div class="glossary-item"><div class="glossary-term">Logic Model</div><div class="glossary-def">A visual framework showing inputs → activities → outputs → outcomes → impact. Most federal grants require one. A roadmap from resources to results.</div></div>
+      <div class="glossary-item"><div class="glossary-term">501(c)(3)</div><div class="glossary-def">The IRS designation for tax-exempt nonprofit organizations. Required for almost all foundation and government grants. IAR has this status confirmed.</div></div>
+      <div class="glossary-item"><div class="glossary-term">SAM.gov</div><div class="glossary-def">System for Award Management — federal registration required before applying to any federal grant. Free but takes 1-2 weeks. Do this first.</div></div>
+      <div class="glossary-item"><div class="glossary-term">Match / Cost Share</div><div class="glossary-def">Some grants require you to match a percentage of the award with your own funds. A 1:1 match means if they give $50K, you show $50K from elsewhere.</div></div>
+      <div class="glossary-item"><div class="glossary-term">Program Officer</div><div class="glossary-def">The foundation staff member who manages a specific grant program. They review applications and are your most important relationship at any foundation.</div></div>
+      <div class="glossary-item"><div class="glossary-term">Site Visit</div><div class="glossary-def">A funder's in-person visit to your organization before making a grant decision. Treat it as the most important meeting of the funding cycle.</div></div>
+      <div class="glossary-item"><div class="glossary-term">Sub-grant</div><div class="glossary-def">Funding passed from a primary grantee (e.g., a state agency) to a smaller org. IAR can access federal COSSUP funds through Texas HHSC sub-grants without applying directly.</div></div>
+      <div class="glossary-item"><div class="glossary-term">SUD</div><div class="glossary-def">Substance Use Disorder — the clinical term for addiction. Using "SUD" in federal applications signals sophistication and increases credibility with health-focused reviewers.</div></div>
+      <div class="glossary-item"><div class="glossary-term">TDCJ</div><div class="glossary-def">Texas Department of Criminal Justice — the state agency managing Texas prisons. Partnership with TDCJ significantly strengthens reentry grant applications.</div></div>
+    </div>
+  </div>
+  <div class="manual-divider"></div>
+
+  <!-- SEC TIPS -->
+  <div class="manual-section" id="sec-tips">
+    <div class="manual-section-head"><div class="manual-section-icon">&#x1F4A1;</div><div><span class="manual-section-num">Section 12</span><div class="manual-section-title">Power User Tips</div></div></div>
+    <div class="manual-grid">
+      <div class="manual-card highlight"><div class="manual-card-title">&#x1F680; The Daily 15-Minute Routine</div><div class="manual-card-body"><strong style="color:var(--white)">Step 1 (2 min):</strong> Open app, read Today's Priority + Urgent Banner.<br><strong style="color:var(--white)">Step 2 (2 min):</strong> Click Priority Advisor, read action plan.<br><strong style="color:var(--white)">Step 3 (10 min):</strong> Take ONE specific action — email, LOI draft, or funder outreach.<br><strong style="color:var(--white)">Step 4 (1 min):</strong> Log the action as a note in the Tracker.</div></div>
+      <div class="manual-card highlight"><div class="manual-card-title">&#x1F4C5; The Monthly Grant Sprint</div><div class="manual-card-body"><strong style="color:var(--white)">Week 1:</strong> Check Calendar — move all deadlines within 60 days to In Progress.<br><strong style="color:var(--white)">Week 2:</strong> Draft narratives for every upcoming deadline using AI Writer.<br><strong style="color:var(--white)">Week 3:</strong> Submit applications. Contact 2-3 program officers for relationship building.<br><strong style="color:var(--white)">Week 4:</strong> Run AI Search for new opportunities. Export CSV for board update.</div></div>
+      <div class="manual-card"><div class="manual-card-title">&#x2328;&#xFE0F; Keyboard Shortcuts</div><div class="manual-card-body">
+        <table class="hotkey-table">
+          <thead><tr><th>Action</th><th>How</th></tr></thead>
+          <tbody>
+            <tr><td>Run AI Search</td><td><span class="kbd">Enter</span> in search box</td></tr>
+            <tr><td>Add Tracker Note</td><td><span class="kbd">Enter</span> in note field</td></tr>
+            <tr><td>Close modal</td><td><span class="kbd">Click</span> dark overlay</td></tr>
+            <tr><td>Cycle grant status</td><td><span class="kbd">Click</span> tracker card</td></tr>
+            <tr><td>Drag to new status</td><td><span class="kbd">Drag + Drop</span></td></tr>
+          </tbody>
+        </table>
+      </div></div>
+      <div class="manual-card"><div class="manual-card-title">&#x1F4A5; Hidden Features</div><div class="manual-card-body">
+        <div style="display:grid;gap:5px">
+          <div style="font-size:11px;color:var(--light)">&#x1F389; <strong>Confetti</strong> — Move any grant to Awarded. You earned it.</div>
+          <div style="font-size:11px;color:var(--light)">&#x1F4D6; <strong>Draft from Modal</strong> — "Draft Narrative" in any How-to-Apply popup jumps to AI Writer with that grant pre-selected.</div>
+          <div style="font-size:11px;color:var(--light)">&#x2B50; <strong>Save from Modal</strong> — "Save to Tracker" inside any popup adds it to your pipeline without closing.</div>
+          <div style="font-size:11px;color:var(--light)">&#x2795; <strong>Add AI Grant</strong> — AI Search results have "+ Add to Tracker" buttons. New discoveries get added permanently.</div>
+          <div style="font-size:11px;color:var(--light)">&#x1F535; <strong>Health Ring</strong> — Watch it turn red to gold to green as you engage more grants. Make it green.</div>
+        </div>
+      </div></div>
+    </div>
+    <div class="manual-pro"><strong>&#x2605; The Most Important Thing:</strong> Shawn Livingston's story — combat veteran, addiction survivor, ultra runner, author — is more powerful than any grant writing technique. Every application that leads with the human truth of IAR's founding story outperforms one that leads with program statistics. The platform is a tool. The story is the weapon.</div>
+  </div>
+
+</div>
+
+
+<!-- HOW TO APPLY MODAL -->
+<div class="modal-overlay" id="modal" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <div class="modal-head">
+      <h2 id="modal-title">How to Apply</h2>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-meta" id="modal-meta"></div>
+      <div style="font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin:1rem 0 .6rem">Application Steps</div>
+      <div class="step-list" id="modal-steps"></div>
+      <div style="margin-top:1rem;padding-top:1rem;border-top:1px solid var(--mid)">
+        <div style="font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:.4rem">Pro Tip for I Am Redemption</div>
+        <div style="font-size:12px;color:var(--light);line-height:1.65" id="modal-tip"></div>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:1rem;flex-wrap:wrap">
+        <a id="modal-url" href="#" target="_blank" class="btn-gold" style="font-size:11px;padding:9px 18px">Visit Grant Page →</a>
+        <button class="btn-outline" onclick="saveFromModal()">Save to Tracker</button>
+        <button class="btn-outline" onclick="draftFromModal()">Draft Narrative</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ══════════════════════════════════════════════════════════
+   API CONFIGURATION
+══════════════════════════════════════════════════════════ */
+// API key is stored securely in Render environment variables.
+// All requests go through /api/claude on the server (never exposed in browser).
+const API_ENDPOINT = '/api/claude';
+
+/* ══════════════════════════════════════════════════════════
+   DATA
+══════════════════════════════════════════════════════════ */
+const GRANTS = [
+  {id:1,name:"ACF — Forever Austin Fund",region:"Austin",type:"Community",deadline:"Upcoming",deadlineDate:"2027-01-10",amount:"Varies",amountNum:25000,focus:["addiction","reentry","trauma"],score:88,veteran:false,url:"https://www.austincf.org/grant/forever-austin-fund/",desc:"Annual grants for Central Texas nonprofits. 2026 focus on economic mobility — strong reentry fit.",whyFit:"IAR is rooted in Austin and serves the exact populations ACF's economic mobility focus targets — people navigating addiction recovery and reentry into the workforce. Shawn's story of rebuilding from addiction is a compelling local narrative for ACF's community donors.",steps:["Register on ACF's nonprofit portal","Review 2026 focus areas for alignment","Attend ACF application webinar (January)","Submit LOI then full application","Await quarterly board review"],tip:"Emphasize measurable outcomes — ACF donors respond to data. Pair program stats with Shawn's personal story for emotional resonance."},
+  {id:2,name:"ACF — Community Grants Program",region:"Austin",type:"Community",deadline:"Open/Rolling",deadlineDate:null,amount:"Varies",amountNum:15000,focus:["addiction","reentry","trauma"],score:85,veteran:false,url:"https://www.austincf.org/community-grants-program/",desc:"Year-round grants matched to donor interests quarterly. Fastest Austin-area grant turnaround.",whyFit:"The rolling nature of this program means IAR can apply immediately without waiting for a window. ACF's donor network includes many Austinites personally connected to addiction and recovery — IAR's mission resonates deeply with this giving community.",steps:["Create ACF nonprofit profile","Submit grant request online any time","Staff review matches with donor interests","Notification within 8–12 weeks","Report on outcomes after award"],tip:"Submit quarterly — each cycle is a new chance. Frame around 'community transformation' language ACF donors respond to."},
+  {id:3,name:"Impact Austin Grants",region:"Austin",type:"Community",deadline:"Upcoming",deadlineDate:"2027-02-05",amount:"Varies",amountNum:20000,focus:["addiction","reentry","trauma"],score:80,veteran:false,url:"https://www.impactaustin.org/grantmaking",desc:"Member-voted grants to Austin nonprofits. Programs and capacity building both eligible.",whyFit:"Impact Austin's member-voted model rewards organizations with authentic community ties. IAR's grassroots Austin roots and Shawn's personal story will stand out in member presentations — this is a relationship-building grant as much as a funding one.",steps:["Register on Impact Austin grants portal","Complete Agency Profile (EIN required)","Submit application by February deadline","Participate in finalist site visit","Present to member voting panel"],tip:"Impact Austin members vote — your presentation and community visibility matter as much as the application."},
+  {id:4,name:"Texas Grants Resource Center",region:"Texas",type:"Community",deadline:"Open/Rolling",deadlineDate:null,amount:"Varies",amountNum:10000,focus:["addiction","reentry","trauma"],score:75,veteran:false,url:"https://tgrc.hogg.utexas.edu/",desc:"Statewide curated grant listings + free research appointments at UT Austin.",whyFit:"TGRC's free research appointments give IAR a major advantage: expert-matched grant lists without hiring a grant consultant. Texas-statewide focus means IAR can access funding beyond Austin while staying grounded in its home state.",steps:["Subscribe to TGRC monthly newsletter","Book free grant research appointment","Search database by focus area","Use TGRC's free proposal review service","Apply directly to matched funders"],tip:"The TGRC appointment is a hidden gem — a grant expert reviews your profile and matches you to funders for free."},
+  {id:5,name:"Hogg Foundation for Mental Health",region:"Texas",type:"Private Foundation",deadline:"Open/Rolling",deadlineDate:null,amount:"Varies",amountNum:50000,focus:["addiction","trauma"],score:82,veteran:false,url:"https://hogg.utexas.edu/",desc:"UT Austin-based foundation funding SUD and mental health programs across Texas with equity focus.",whyFit:"The Hogg Foundation's equity lens and SUD focus are tailor-made for IAR. Their prioritization of organizations serving underserved, trauma-impacted communities in Texas directly aligns with IAR's participant demographics.",steps:["Review Hogg Foundation funding priorities","Attend a Hogg Foundation webinar","Submit Letter of Inquiry (LOI)","Invited full applications reviewed quarterly","Report outcomes biannually if funded"],tip:"Hogg prioritizes trauma-informed, equity-centered approaches. Highlight IAR's reach to underserved communities impacted by incarceration."},
+  {id:6,name:"OneStar Foundation",region:"Texas",type:"Community",deadline:"Open/Rolling",deadlineDate:null,amount:"Varies",amountNum:30000,focus:["reentry","trauma","workforce"],score:76,veteran:false,url:"https://onestarfoundation.org/",desc:"Statewide Texas grants + AmeriCorps program administration. Potential staff funding avenue.",whyFit:"OneStar's AmeriCorps VISTA program could place a free full-time staff member at IAR for grant writing and program expansion — an immediate capacity multiplier. Their reentry and workforce focus amplifies IAR's core programming.",steps:["Explore OneStar's current grant programs","Apply for AmeriCorps VISTA placement (free staff)","Submit grant interest form online","Attend OneStar capacity-building workshops","Apply to current open RFPs"],tip:"AmeriCorps VISTA is underused — OneStar can place a free full-time volunteer at IAR to help with grant writing and program management."},
+  {id:7,name:"Texas OOG — Criminal Justice Division",region:"Texas",type:"Federal",deadline:"Upcoming",deadlineDate:"2026-09-01",amount:"$500K–$6M pool",amountNum:100000,focus:["addiction","reentry"],score:83,veteran:false,url:"https://egrants.gov.texas.gov/",desc:"State-administered federal JAG, RSAT, VOCA, and COSSUP funds via the Texas eGrants portal.",whyFit:"Texas OOG administers federal dollars that explicitly fund reentry and addiction recovery services. IAR's direct service model and Austin-area presence position it well for this competitive but high-value state pipeline.",steps:["Register on egrants.gov.texas.gov","Complete SAM.gov federal registration","Identify eligible grant programs (JAG/VOCA/RSAT)","Build local criminal justice partnership (Sheriff, DA, probation)","Submit application through eGrants portal"],tip:"Partnering with Travis County or Austin PD significantly strengthens eligibility. Reach out to local criminal justice partners first."},
+  {id:8,name:"Second Chance Act — Reentry Program (DOJ/BJA)",region:"National",type:"Federal",deadline:"Upcoming",deadlineDate:"2026-06-15",amount:"Up to $1M+",amountNum:500000,focus:["reentry","addiction","workforce"],score:95,veteran:false,url:"https://csgjusticecenter.org/resources/funding/opportunities/second-chance-act-grant-program/",desc:"The flagship federal reentry grant. Explicitly funds nonprofits for mentoring, job training, housing, and SUD treatment.",whyFit:"The Second Chance Act is the flagship federal reentry grant — and IAR was built for it. Shawn's personal transition from addiction to leadership exemplifies the very transformation this grant funds. Strong narrative + programmatic alignment = exceptional fit.",steps:["Register at grants.gov and SAM.gov","Read full NOFO when published (watch BJA.gov)","Develop partnership with local jail or TDCJ unit","Draft logic model showing recidivism reduction","Submit application through grants.gov portal","Prepare for BJA technical review call"],tip:"Your founder's personal journey from incarceration-adjacent addiction to recovery leadership is a rare narrative advantage. Lead with Shawn's story backed by data."},
+  {id:9,name:"BJA — Comprehensive Reentry ($155.5M)",region:"National",type:"Federal",deadline:"Urgent",deadlineDate:"2026-04-06",amount:"$4M pool",amountNum:250000,focus:["reentry"],score:90,veteran:false,url:"https://www.bja.gov/funding",desc:"Part of DOJ's massive 2026 reentry package. Deadlines March–April 2026 — act immediately.",whyFit:"This is one of the highest-urgency, highest-value opportunities in IAR's pipeline. BJA's comprehensive reentry investment directly funds nonprofits providing the mentorship, peer support, and SUD recovery services IAR specializes in.",steps:["Go to BJA.gov NOW and find the open NOFO","Confirm application deadline immediately","Verify SAM.gov registration is current","Assemble required documents (990, audit, logic model)","Submit via grants.gov before deadline"],tip:"URGENT — these deadlines may have passed or still be open. Check BJA.gov TODAY. If missed, set alert for FY2027 cycle."},
+  {id:10,name:"SAMHSA — FY2026 Grant Programs",region:"National",type:"Federal",deadline:"Upcoming",deadlineDate:"2026-07-01",amount:"Multi-year grants",amountNum:200000,focus:["addiction","trauma","reentry"],score:88,veteran:false,url:"https://www.samhsa.gov/grants",desc:"SAMHSA's annual SUD treatment, adult reentry, and behavioral health funding cycle.",whyFit:"SAMHSA specifically funds peer-led recovery programs and SUD treatment nonprofits. IAR's lived-experience model — led by Shawn — is exactly the 'recovery community organization' structure SAMHSA prioritizes in its grant criteria.",steps:["Subscribe to SAMHSA grant alerts at samhsa.gov","Review FY2026 NOFO list as released","Attend SAMHSA applicant webinar for target grant","Complete all federal registrations (SAM, grants.gov, eRA Commons)","Submit full application with logic model and budget"],tip:"SAMHSA scores heavily on evidence-based practices. Reference the Recovery Community Model and peer support literature to strengthen the application."},
+  {id:11,name:"DOJ — COSSUP Program",region:"National",type:"Federal",deadline:"Upcoming",deadlineDate:"2026-08-01",amount:"$65M total (state-level)",amountNum:75000,focus:["addiction","reentry"],score:80,veteran:false,url:"https://www.bja.gov/ProgramDetails.aspx?Program_ID=94",desc:"Opioid and stimulant response coordination across public safety and behavioral health — access through Texas HHSC partnership.",whyFit:"COSSUP's opioid/stimulant response mandate maps directly onto IAR's addiction recovery programming. By partnering with Travis County or HHSC, IAR can access sub-grant funding without the burden of a direct federal application.",steps:["Contact Texas HHSC Substance Abuse Services division","Explore sub-grant opportunities under Texas COSSUP award","Propose IAR as community-based implementation partner","Draft MOU with HHSC or county partner","Submit sub-grant proposal to state coordinator"],tip:"IAR doesn't apply directly — partner with HHSC or Travis County Behavioral Health to access COSSUP sub-grant funding."},
+  {id:12,name:"Robert Wood Johnson Foundation",region:"National",type:"Private Foundation",deadline:"Open/Rolling",deadlineDate:null,amount:"$50K–$500K+",amountNum:100000,focus:["addiction","trauma","reentry"],score:84,veteran:false,url:"https://www.rwjf.org/en/grants/active-funding-opportunities.html",desc:"Largest U.S. health philanthropy. $50K Local Data for Equitable Communities grants currently open.",whyFit:"RWJF's health equity mission and current Local Data grants align with IAR's data-driven approach to community healing. Shawn's leadership provides a compelling lived-experience angle that RWJF increasingly values in its grantees.",steps:["Review active funding opportunities at rwjf.org","Identify the best fit program (Local Data, Health Equity, etc.)","Create RWJF online account and complete eligibility quiz","Submit online proposal (no LOI required for some programs)","RWJF staff review within 8–12 weeks","Site visit if advanced to next round"],tip:"RWJF responds to data-driven proposals. Build a simple outcomes tracking system before applying — even basic metrics like people served and 90-day sobriety rates will stand out."},
+  {id:13,name:"Hearst Foundations — Social Service",region:"National",type:"Private Foundation",deadline:"Open/Rolling",deadlineDate:null,amount:"Min. $100K",amountNum:150000,focus:["addiction","reentry","trauma","workforce"],score:79,veteran:false,url:"https://www.hearstfdn.org/applying-reporting/how-to-apply/",desc:"National philanthropy with year-round rolling applications. Minimum $100K grants. Board meets quarterly.",whyFit:"Hearst's minimum $100K floor and national reach make this a meaningful funding milestone for IAR. Their social service priority — addiction, housing, trauma — mirrors IAR's three core focus areas almost exactly.",steps:["Review Hearst Foundations funding limitations page","Create account on new Hearst Grants Portal (launched Aug 2025)","Complete full application (no LOI required)","Staff review over 4–6 weeks","Site visit if advanced to board consideration","Board meets March, June, September, December"],tip:"Hearst requires a site visit for board-considered applications. Prepare your physical space and program documentation — the visit is as important as the proposal."},
+  {id:14,name:"Draper Richards Kaplan Foundation",region:"National",type:"Private Foundation",deadline:"Open/Rolling",deadlineDate:null,amount:"$300K over 3 years",amountNum:100000,focus:["addiction","reentry","trauma"],score:82,veteran:false,url:"https://www.drkfoundation.org/",desc:"$300K over 3 years for early-stage nonprofits with scalable, replicable models. Includes board support.",whyFit:"DRK specifically funds early-stage nonprofits with scalable, founder-driven models. IAR's podcast and community platform represent a replicable approach beyond Austin — exactly the growth potential DRK looks for.",steps:["Complete online eligibility questionnaire at drkfoundation.org","Submit executive summary and program description","Initial staff screening call if shortlisted","Site visit and deeper due diligence","DRK portfolio committee review","Multi-year grant agreement executed"],tip:"DRK looks for a replicable model — can the IAR approach be scaled to other cities? Frame the application around 'what would it take to do this in 5 cities.'"},
+  {id:15,name:"Peter G. Dodge Foundation — TAPs",region:"National",type:"Private Foundation",deadline:"Open/Rolling",deadlineDate:null,amount:"Varies",amountNum:30000,focus:["addiction"],score:91,veteran:false,url:"https://pgdodgefoundation.org/",desc:"Launched 2023. Directly funds nonprofits in addiction recovery with technical assistance and grants.",whyFit:"The Dodge Foundation's TAPs program was built for organizations like IAR: addiction recovery nonprofits led by people with lived experience. Shawn's personal story is the primary qualification here.",steps:["Visit pgdodgefoundation.org and review TAPs program","Submit brief organizational overview","Foundation staff contact for alignment call","Technical assistance engagement begins","Grant offer extended to strong TAPs partners","Annual reporting requirement"],tip:"The Dodge Foundation's TAPs program is specifically designed for organizations like IAR — addiction recovery nonprofits led by people with lived experience."},
+  {id:16,name:"Open Society Foundations",region:"National",type:"Private Foundation",deadline:"Open/Rolling",deadlineDate:null,amount:"$50K–$500K",amountNum:75000,focus:["reentry","addiction"],score:78,veteran:false,url:"https://www.opensocietyfoundations.org/grants",desc:"Criminal justice reform and addiction recovery. Values system-impacted leaders. LOI-based.",whyFit:"Open Society prioritizes organizations led by system-impacted individuals — Shawn's background as a veteran who navigated addiction, recovery, and leadership is precisely the profile OSF champions in its criminal justice reform portfolio.",steps:["Research OSF U.S. Programs priorities","Submit 2-page Letter of Inquiry via online portal","OSF program officer review (4–8 weeks)","Full proposal invited if LOI advances","Internal OSF review process (3–6 months)","Multi-year grant if approved"],tip:"OSF specifically values organizations led by or serving people directly impacted by incarceration. Shawn's lived experience is a major differentiator here."},
+  {id:17,name:"MacArthur Foundation — Safety & Justice",region:"National",type:"Private Foundation",deadline:"Upcoming",deadlineDate:"2026-09-01",amount:"$250K–$1M+",amountNum:300000,focus:["reentry","trauma"],score:81,veteran:false,url:"https://www.macfound.org/programs/safety-and-justice/",desc:"Multi-year grants for criminal justice reform and reentry. Large grants with multi-year commitments.",whyFit:"MacArthur's scale of investment ($250K–$1M+) could transform IAR from a program to a movement. Positioning IAR as a replicable community-led recovery model for criminal justice reform aligns with MacArthur's Safety & Justice mandate.",steps:["Review Safety and Justice Challenge criteria","Identify a MacArthur program officer to connect with","Submit LOI through MacArthur's online portal","Invited to full proposal if LOI advances","Multi-stage review with site visits","Multi-year grant agreement (typically 3 years)"],tip:"MacArthur prioritizes systemic change. Position IAR as a model for community-led recovery ecosystems — not just a service provider but a movement builder."},
+  {id:18,name:"W.K. Kellogg Foundation",region:"National",type:"Private Foundation",deadline:"Open/Rolling",deadlineDate:null,amount:"Varies; multi-year",amountNum:100000,focus:["reentry","trauma","workforce"],score:75,veteran:false,url:"https://www.wkkf.org/grant-seekers/",desc:"Racial equity, family economic security. Relevant for families of incarcerated people.",whyFit:"Kellogg's racial equity and family economic security priorities align with IAR's impact on BIPOC communities disproportionately affected by incarceration. Collecting demographic outcomes data before applying will significantly strengthen this application.",steps:["Review Kellogg's current strategic priorities","Submit LOI at wkkf.org/grant-seekers","Kellogg staff review (6–8 weeks)","If advanced, invited to full proposal","Site visit likely for larger grants","Multi-year relationship expected"],tip:"Kellogg prioritizes racial equity. Collect and present demographic data on the communities IAR serves — particularly BIPOC community members impacted by incarceration."},
+  {id:19,name:"Annie E. Casey Foundation",region:"National",type:"Private Foundation",deadline:"Open/Rolling",deadlineDate:null,amount:"Varies; multi-year",amountNum:75000,focus:["reentry","trauma","workforce"],score:76,veteran:false,url:"https://www.aecf.org/",desc:"Vulnerable children and families — especially those with incarcerated parents. Innovation-focused.",whyFit:"Annie E. Casey's focus on children of incarcerated parents opens a unique funding angle for IAR — serving not just the individual in recovery but their families. This reframe could unlock a major new funding stream.",steps:["Monitor AECF's initiative announcements at aecf.org","Identify alignment with Family First or Thrive by 25 initiatives","Submit LOI or respond to open RFP","AECF team review (8–12 weeks)","Site visit if advanced","Multi-year engagement typical"],tip:"Frame IAR's work around family reunification and children of incarcerated parents — this is AECF's direct priority and unlocks a different funding stream."},
+  {id:20,name:"Gupta Family Foundation",region:"National",type:"Private Foundation",deadline:"Open/Rolling",deadlineDate:null,amount:"$5K–$250K+",amountNum:25000,focus:["addiction","reentry","trauma"],score:86,veteran:false,url:"https://guptafamilyfoundation.org/",desc:"Prioritizes small community-based orgs with lived-experience leaders. 90% of funds must reach beneficiaries.",whyFit:"Gupta Foundation's explicit preference for founder-committed, lived-experience nonprofits and their 90% beneficiary requirement match IAR's lean operating model perfectly. This is one of the strongest founder-story matches in the database.",steps:["Submit brief organization description online","Include founder's personal story prominently","Attach 990 and current operating budget","GFF staff review (4–6 weeks)","Video interview and site visit for finalists","Annual grant with renewal potential"],tip:"The Gupta Foundation explicitly loves founders with personal commitment to their mission. Lead with Shawn's story. Keep overhead low in your budget — they require 90%+ reaching beneficiaries."},
+  {id:21,name:"Centene Foundation",region:"National",type:"Private Foundation",deadline:"Open/Rolling",deadlineDate:null,amount:"Varies",amountNum:30000,focus:["addiction","trauma"],score:77,veteran:false,url:"https://centenefoundation.org/",desc:"Behavioral health, mental wellness, and whole-person care community grants.",whyFit:"Centene operates Texas Medicaid managed care — Shawn's advocacy work reduces downstream behavioral health costs for Centene members. Framing IAR's impact in terms of healthcare cost avoidance opens a powerful corporate giving narrative.",steps:["Review Centene Foundation focus areas online","Submit letter of inquiry via foundation portal","Staff alignment review","Full application if invited","Board review quarterly","Report on health outcomes annually"],tip:"Centene operates Medicaid managed care in Texas — emphasize how IAR's work reduces downstream healthcare costs for their Texas members."},
+  {id:22,name:"Conrad N. Hilton Foundation",region:"National",type:"Private Foundation",deadline:"Open/Rolling",deadlineDate:null,amount:"Varies; multi-year",amountNum:100000,focus:["addiction","reentry","housing","trauma"],score:80,veteran:false,url:"https://www.hiltonfoundation.org/grants/",desc:"SUD, homelessness, and foster youth — all populations in IAR's community. LOI-based.",whyFit:"Hilton's SUD and homelessness intersection funding aligns with IAR's participant base, many of whom have experienced housing instability alongside addiction. This dual-focus framing could unlock multi-year funding support.",steps:["Review Hilton Foundation substance use priority page","Submit LOI through foundation grants portal","Program officer review (4–8 weeks)","Full proposal invited if LOI advances","Due diligence and site visit","Multi-year grant agreement"],tip:"Hilton's substance use program focuses on the intersection of SUD and homelessness. If IAR serves people who've experienced housing instability, document this heavily."},
+  {id:23,name:"Bank of America Charitable Foundation",region:"National",type:"Corporate",deadline:"Upcoming",deadlineDate:"2026-03-02",amount:"Varies",amountNum:50000,focus:["workforce","housing","reentry"],score:78,veteran:false,url:"https://about.bankofamerica.com/en/making-an-impact/charitable-foundation-funding",desc:"Two 2026 cycles: Basic Needs (Feb–Mar) and Stable Housing (May–Jun). Register on NPO Hub to apply.",whyFit:"Bank of America's Basic Needs cycle directly funds organizations serving economic stability for vulnerable populations — IAR's reentry participants rebuilding financial lives is a clear match for BofA's community investment priorities.",steps:["Register on NPO Hub (formerly FrontDoor)","Set up ACH payment capability","Apply during Cycle 1: Feb 2 – Mar 2, 2026 (Basic Needs)","Or apply Cycle 2: May 18 – Jun 29, 2026 (Stable Housing)","BofA program staff review","Award within 60 days of cycle close"],tip:"Cycle 1 Basic Needs deadline is March 2 — very soon. Apply immediately if IAR provides emergency assistance, food, or direct support to individuals."},
+  {id:24,name:"Wells Fargo — Veteran & Military Grants",region:"National",type:"Corporate",deadline:"Open/Rolling",deadlineDate:null,amount:"Up to $200K+",amountNum:75000,focus:["veteran","workforce","housing"],score:89,veteran:true,url:"https://www.wellsfargo.com/about/responsibility-and-impact/community-giving/grant-process/",desc:"$64M+ awarded to veteran nonprofits over 5 years. Covers housing, career transition, financial health.",whyFit:"Wells Fargo has committed $64M+ to veteran nonprofits and Shawn's combat veteran background is the primary differentiator here. This is one of the top 3 veteran-specific funding opportunities for IAR in terms of award size and mission alignment.",steps:["Submit grant interest form at wellsfargo.com","Wells Fargo team reviews for strategic alignment","Invitation extended to eligible organizations","Complete full online grant application","WF program officer relationship development","Annual grant with renewal pathway"],tip:"Wells Fargo's veteran team is led by active champions for veteran causes. Connect with Sean Passmore (Head of Enterprise Military & Veteran Initiatives) on LinkedIn before applying."},
+  {id:25,name:"State Farm — Community Grants",region:"National",type:"Corporate",deadline:"Upcoming",deadlineDate:"2026-10-01",amount:"Varies",amountNum:20000,focus:["workforce","reentry"],score:70,veteran:false,url:"https://www.statefarm.com/about-us/community-involvement/grants-and-scholarships",desc:"Job training, financial literacy, and community development. Invitation-based but requests accepted.",whyFit:"State Farm's workforce and financial literacy focus maps to IAR's employment-readiness programming for people in recovery. Local agent relationships are the fastest path in — a warm intro from an Austin-area State Farm agent could be transformative.",steps:["Submit funding request form at statefarm.com","State Farm team reviews against current priorities","Invitation extended for application","Complete online grant application","Review cycle runs quarterly","Grant agreement and reporting requirements"],tip:"State Farm local agents often champion nonprofits in their communities. Connect with a local Austin State Farm agent — a warm introduction dramatically increases success rate."},
+  {id:26,name:"NFL Foundation — Player Matching Grant",region:"National",type:"Corporate",deadline:"Open/Rolling",deadlineDate:null,amount:"Up to $5K matching",amountNum:5000,focus:["reentry","workforce"],score:68,veteran:false,url:"https://www.nfl.com/causes/nfl-foundation/",desc:"Matches contributions from NFL players to nonprofits in social justice and criminal justice reform.",whyFit:"NFL player matching grants are a relationship-based opportunity — identifying a Texas-based player with criminal justice commitment turns IAR's mission into a celebrity-amplified fundraising story with national reach potential.",steps:["Identify Texas-area NFL player with social justice focus","Connect via player's foundation or management","Player nominates IAR for matching grant","NFL Foundation verifies eligibility","Matching contribution processed","Social media recognition often included"],tip:"Dallas Cowboys and Houston Texans players are the most accessible Texas connections. Look for players who've spoken publicly about criminal justice — they are the most likely champions."},
+  {id:27,name:"USAA Foundation — Military & Veteran Grants",region:"National",type:"Corporate",deadline:"Open/Rolling",deadlineDate:null,amount:"Varies",amountNum:50000,focus:["veteran","workforce","housing"],score:87,veteran:true,url:"https://www.usaa.com/inet/pages/about_usaa_foundation",desc:"Exclusively funds veteran and military family nonprofits. Shawn's service background makes IAR a strong candidate.",whyFit:"USAA exclusively funds veteran organizations — IAR's veteran founder is the direct qualification. This is one of the cleanest eligibility matches in the database and should be treated as a high-priority application.",steps:["Visit usaa.com/foundation for current opportunities","Submit organizational profile and mission statement","USAA staff alignment review","Full application if eligible","USAA employee committee review","Annual grant with impact reporting"],tip:"USAA only funds veteran-focused organizations — IAR's founder being a combat veteran is a direct qualification. This is one of the strongest match grants in the database."},
+  {id:29,name:"The Standard — Giving Program",region:"National",type:"Corporate",deadline:"Open/Rolling",deadlineDate:null,amount:"Varies",amountNum:25000,focus:["addiction","reentry","workforce","trauma"],score:74,veteran:false,url:"https://www.standard.com/about-us/corporate-responsibility/",desc:"The Standard insurance company funds financial wellness, workforce readiness, and mental health nonprofits nationwide through community grants and employee giving programs.",whyFit:"The Standard's workforce and financial wellness focus connects directly to IAR's reentry employment programming. Their mental health and whole-person recovery priorities align with Shawn's mission — and their employee giving programs can supplement a direct grant application.",steps:["Visit standard.com/about-us/corporate-responsibility","Review current community investment priorities","Submit letter of inquiry or grant request online","Standard community team reviews for alignment","Follow-up call if advanced","Grant notification within 60–90 days"],tip:"The Standard has a strong employee volunteer and matching gift program alongside direct grants. Engage local employees first — an internal champion dramatically accelerates the grant process."},
+  {id:30,name:"Christopher D. Smithers Foundation",region:"National",type:"Private Foundation",deadline:"Open/Rolling",deadlineDate:null,amount:"Varies",amountNum:50000,focus:["addiction","trauma"],score:91,veteran:false,url:"https://smithersfoundation.org/",desc:"One of the oldest addiction-focused foundations in the U.S. Funds treatment, prevention, and recovery programs with a particular emphasis on evidence-based and innovative approaches.",whyFit:"Smithers is one of the most mission-aligned funders in existence for IAR — their entire focus is addiction recovery, and they specifically value organizations led by people with lived experience. Shawn's survivor story combined with IAR's community model is exactly what Smithers funds.",steps:["Review Smithers Foundation grant guidelines at smithersfoundation.org","Submit a brief letter of inquiry describing IAR's mission and programs","Foundation staff reviews for alignment (4–6 weeks)","Full application invited if LOI advances","Site visit possible for stronger candidates","Annual grant with renewal pathway"],tip:"Lead with Shawn's personal recovery journey — Smithers was founded by a family personally impacted by alcoholism and deeply values founders with lived experience in addiction."},
+  {id:31,name:"BAE Systems — Community Giving",region:"National",type:"Corporate",deadline:"Open/Rolling",deadlineDate:null,amount:"Varies",amountNum:20000,focus:["veteran","workforce","reentry"],score:78,veteran:true,url:"https://www.baesystems.com/en-us/our-company/corporate-responsibility/",desc:"Global defense and aerospace company with a strong veteran hiring mandate and community investment program focused on workforce development, STEM, and veteran transition support.",whyFit:"BAE Systems' workforce development and veteran transition priorities align directly with IAR's programming. As a defense contractor with deep veteran commitments, BAE is a strong corporate partner for an organization led by a combat veteran serving the reentry and recovery community.",steps:["Visit baesystems.com/corporate-responsibility for current program info","Identify a local BAE facility or employee contact in Texas","Submit community investment request through their online portal","BAE community affairs team reviews quarterly","Partnership discussion if advanced","Grant or in-kind support offer"],tip:"BAE Systems has facilities in Texas and a veteran workforce pipeline — connect with their military affairs team directly. A veteran-to-veteran introduction carries significant weight."},
+  {id:32,name:"Alice Kleberg Reynolds Foundation",region:"Texas",type:"Private Foundation",deadline:"Open/Rolling",deadlineDate:null,amount:"Varies",amountNum:35000,focus:["reentry","addiction","trauma","workforce"],score:80,veteran:false,url:"https://www.akreynoldsfoundation.org/",desc:"Texas-based private foundation focused on human services, community development, and vulnerable population support across the state. Supports programs that build resilience and restore dignity.",whyFit:"The Reynolds Foundation's Texas focus and human services mandate match IAR's geographic base and mission. Their emphasis on restoring dignity to vulnerable populations resonates with IAR's core belief that no person is beyond redemption.",steps:["Review foundation priorities at akreynoldsfoundation.org","Submit a brief letter of inquiry (2–3 pages maximum)","Foundation staff reviews LOI (6–8 weeks)","Full application invited if aligned","Board review occurs twice annually","Notification within 3–4 months of full application"],tip:"Texas-based foundations like Reynolds often prioritize relationships over cold applications. Connecting through the Texas Council of Nonprofits or a mutual funder introduction can accelerate the review process."},
+  {id:33,name:"Bank of America Empowering Communities",region:"National",type:"Corporate",deadline:"Upcoming",deadlineDate:"2026-06-29",amount:"Varies",amountNum:50000,focus:["workforce","housing","reentry","addiction"],score:82,veteran:false,url:"https://about.bankofamerica.com/en/making-an-impact/charitable-foundation-funding",desc:"Bank of America's second 2026 grant cycle focuses on Stable Housing and Economic Mobility. Nonprofits serving vulnerable populations rebuilding economic stability are priority candidates.",whyFit:"IAR's reentry population — individuals rebuilding economic lives post-incarceration — maps precisely to BofA's economic mobility and stable housing priorities. Shawn's story of going from addiction to entrepreneurship is the economic transformation narrative BofA wants to fund.",steps:["Register on NPO Hub (formerly FrontDoor) if not already registered","Set up ACH payment capability (required)","Apply during Cycle 2: May 18 – Jun 29, 2026 (Stable Housing/Economic Mobility)","Frame application around economic mobility outcomes for IAR participants","BofA program staff review within 60 days of cycle close","Award notification and grant agreement"],tip:"This Cycle 2 deadline is June 29 — frame IAR's work around stable housing and economic mobility outcomes, not just addiction recovery. Track how many participants gained employment or stable housing."},
+  {id:34,name:"Young Foundation",region:"National",type:"Private Foundation",deadline:"Open/Rolling",deadlineDate:null,amount:"Varies",amountNum:30000,focus:["reentry","addiction","trauma","workforce"],score:75,veteran:false,url:"https://youngfoundation.org/",desc:"UK-based foundation with U.S.-applicable social innovation programs. Funds community-led solutions to social challenges with an emphasis on peer-led and lived-experience models.",whyFit:"The Young Foundation specifically seeks community-led, lived-experience organizations — IAR's peer recovery model and Shawn's founder story align perfectly with their theory of change. Their interest in scalable social innovation makes IAR's podcast and platform particularly compelling.",steps:["Review Young Foundation's current programs and funding priorities","Submit a concept note or letter of inquiry","Foundation team reviews for alignment","Invited to full application if concept resonates","Site visit or video call with leadership","Grant offer and reporting requirements"],tip:"Young Foundation values social innovation and replication — frame IAR's podcast and community platform as a scalable model for peer-led addiction recovery that can be replicated in other cities."},
+  {id:35,name:"J.W. Couch Foundation",region:"Texas",type:"Private Foundation",deadline:"Open/Rolling",deadlineDate:null,amount:"Varies",amountNum:20000,focus:["addiction","reentry","trauma"],score:77,veteran:false,url:"https://jwcouchfoundation.org/",desc:"Texas-based private foundation supporting human services and community development organizations across the state, with a focus on organizations that serve vulnerable and underserved populations.",whyFit:"As a Texas-based funder focused on vulnerable populations, the Couch Foundation is a strong regional fit for IAR. Texas-based foundations often prioritize relationships and community roots — IAR's Austin presence and grassroots model are assets.",steps:["Research J.W. Couch Foundation current priorities and application process","Submit letter of inquiry with organizational overview","Foundation staff review (4–8 weeks)","Full application invited if LOI advances","Board review — typically occurs quarterly","Notification within 60–90 days of board review"],tip:"Texas private foundations like Couch often rely on community networks for referrals. A warm introduction from another Texas nonprofit or community leader can make a significant difference."},
+  {id:36,name:"Sundt Foundation",region:"Texas",type:"Private Foundation",deadline:"Open/Rolling",deadlineDate:null,amount:"Up to $10K",amountNum:10000,focus:["reentry","addiction","workforce","trauma"],score:73,veteran:false,url:"https://www.sundtfoundation.org/",desc:"Construction company-affiliated foundation making community grants in Texas and other markets where Sundt operates. Focuses on workforce development, community resilience, and human services.",whyFit:"Sundt's Texas presence and community resilience focus make this a solid local match for IAR. Their workforce development priority aligns with IAR's employment programming for people in recovery and reentry — framing participants as future workforce contributors resonates with Sundt's values.",steps:["Visit sundtfoundation.org to review grant guidelines","Submit online grant application","Sundt Foundation board reviews applications quarterly","Notification within 60–90 days","Grant agreement and single progress report required","Renewal applications considered annually"],tip:"Sundt's grant size ($10K) makes this a strong early win to build credibility and track record. Apply for a specific, concrete program component — mentorship equipment, a workshop series, or event costs."},
+  {id:37,name:"Burdine Johnson Foundation",region:"Texas",type:"Private Foundation",deadline:"Open/Rolling",deadlineDate:null,amount:"Varies",amountNum:25000,focus:["reentry","addiction","trauma","workforce"],score:78,veteran:false,url:"https://burdinejohnson.org/",desc:"Texas private foundation focused on human services, social welfare, and community organizations serving vulnerable populations across the state.",whyFit:"Burdine Johnson's Texas-wide human services mandate and focus on vulnerable populations creates strong alignment with IAR's participant community. Their support for organizations addressing addiction, trauma, and social reintegration mirrors IAR's core programming.",steps:["Review Burdine Johnson Foundation guidelines online","Submit letter of inquiry (2 pages maximum)","Foundation staff reviews LOI for alignment","Full application packet requested if advanced","Board meets twice annually for grant review","Award notification following board meeting"],tip:"Focus your LOI on specific outcomes and community impact data — Texas private foundations like Burdine Johnson respond to clear evidence of community transformation. One-page outcome summaries are highly effective."},
+  {id:38,name:"Meadows Foundation",region:"Texas",type:"Private Foundation",deadline:"Open/Rolling",deadlineDate:null,amount:"$25K–$500K",amountNum:75000,focus:["addiction","reentry","trauma","housing","workforce"],score:84,veteran:false,url:"https://www.mfi.org/",desc:"One of Texas's largest private foundations. Funds human services, mental health, addiction recovery, and community development across the state. Multi-year grants available.",whyFit:"Meadows is a cornerstone Texas philanthropy with explicit funding interest in addiction recovery and mental health — IAR's exact mission territory. Their scale ($25K–$500K), multi-year commitment capacity, and Texas-wide reach make this one of the highest-value in-state funding opportunities for IAR.",steps:["Review Meadows Foundation priorities at mfi.org","Submit online Letter of Inquiry (max 3 pages)","Foundation staff reviews LOI (6–8 weeks)","Invited organizations submit full proposal","Due diligence and possible site visit","Board meets quarterly — grant notification follows"],tip:"Meadows Foundation invests in organizations with strong leadership and community accountability. Shawn's veteran background, lived experience, and public profile (author, ultra runner) are significant differentiators in their review process."},
+  {id:39,name:"Lola Wright Foundation",region:"Texas",type:"Private Foundation",deadline:"Open/Rolling",deadlineDate:null,amount:"Varies",amountNum:20000,focus:["addiction","trauma","reentry"],score:76,veteran:false,url:"https://www.lolawright.org/",desc:"Austin-based private foundation dedicated to mental health, addiction recovery, and trauma healing. Prioritizes organizations serving underserved Austin-area communities.",whyFit:"Lola Wright is an Austin foundation focused specifically on addiction and mental health — making it one of the most geographically and mission-aligned funders for IAR. Their community focus on underserved Austinites directly overlaps with IAR's participant population.",steps:["Visit lolawright.org to review grant criteria and application process","Submit grant application online or via email per foundation instructions","Foundation staff reviews applications (4–6 weeks)","Interview or site visit if advanced","Board review and grant notification","Annual impact report required"],tip:"Lola Wright's Austin-focus means IAR's local roots are a major advantage. Document your Austin community impact specifically — neighborhood-level data, Travis County participants, and Austin community partnerships will strengthen the application."},
+  {id:40,name:"Galesi Family Foundation",region:"National",type:"Private Foundation",deadline:"Open/Rolling",deadlineDate:null,amount:"Varies",amountNum:25000,focus:["reentry","addiction","trauma","workforce"],score:74,veteran:false,url:"https://galesifamilyfoundation.org/",desc:"Private family foundation supporting human services, community development, and organizations addressing addiction, reentry, and workforce development across the U.S.",whyFit:"Family foundations like Galesi often respond most strongly to personal founder stories and authentic mission commitment — Shawn's narrative of recovery and leadership is the kind of story that resonates with family philanthropy. Their broad human services mandate gives IAR multiple angle to apply from.",steps:["Research Galesi Family Foundation current funding priorities","Submit letter of inquiry with organizational background","Foundation team reviews LOI","Full application invited if aligned","Family board reviews proposals","Grant offer and reporting discussed"],tip:"Family foundations are relationship-driven. Look for connections in your board or network to the Galesi family — a warm introduction from a trusted mutual contact can open doors that cold applications cannot."},
+  {id:28,name:"Grants.gov — Federal Hub",region:"National",type:"Federal",deadline:"Open/Rolling",deadlineDate:null,amount:"Varies",amountNum:0,focus:["addiction","reentry","trauma","veteran","housing","workforce"],score:72,veteran:false,url:"https://www.grants.gov",desc:"All federal grant opportunities in one place. Set keyword alerts for addiction, reentry, veteran, trauma.",whyFit:"Grants.gov is the gateway to all federal funding. SAM.gov registration is the non-negotiable first step that unlocks every federal grant category IAR qualifies for — this investment of time pays dividends across the entire federal funding pipeline.",steps:["Create grants.gov account","Register in SAM.gov (required for all federal grants, takes 1–2 weeks)","Search keywords: addiction recovery, reentry, veteran, SUD, trauma-informed","Set email alerts for new opportunities","Filter by Eligible Applicants: Nonprofits","Apply directly through grants.gov for each opportunity"],tip:"SAM.gov registration is the single most important thing IAR can do right now — without it, zero federal grants are accessible. Register today at sam.gov."}
+];
+
+const FUNDERS = [
+  {name:"Austin Community Foundation",type:"Community Foundation",contact:"Community Grants Team",email:"grants@austincf.org",status:"Cold",notes:"Year-round program. Need to create portal account and submit org profile.",website:"https://austincf.org"},
+  {name:"Bureau of Justice Assistance (BJA)",type:"Federal Agency",contact:"BJA Grants Division",email:"askbja@usdoj.gov",status:"Cold",notes:"Watch BJA.gov for Second Chance Act NOFO. Must have SAM.gov registration first.",website:"https://bja.gov"},
+  {name:"Robert Wood Johnson Foundation",type:"Private Foundation",contact:"RWJF Program Officer",email:"mail@rwjf.org",status:"Cold",notes:"Submitted interest via website. Waiting for alignment confirmation.",website:"https://rwjf.org"},
+  {name:"Draper Richards Kaplan Foundation",type:"Private Foundation",contact:"Portfolio Team",email:"info@drkfoundation.org",status:"Cold",notes:"Strong fit for early-stage social entrepreneur profile. Apply online year-round.",website:"https://drkfoundation.org"},
+  {name:"Peter G. Dodge Foundation",type:"Private Foundation",contact:"TAPs Program Director",email:"info@pgdodgefoundation.org",status:"Warm",notes:"Connected via addiction recovery network. TAPs program directly aligned with IAR mission.",website:"https://pgdodgefoundation.org"},
+  {name:"Wells Fargo Foundation",type:"Corporate Foundation",contact:"Sean Passmore — Veteran Initiatives",email:"via wellsfargo.com",status:"Cold",notes:"Connect on LinkedIn before formal submission. Veteran angle is key differentiator.",website:"https://wellsfargo.com"},
+  {name:"Gupta Family Foundation",type:"Private Foundation",contact:"GFF Grants Team",email:"via guptafamilyfoundation.org",status:"Cold",notes:"Explicit preference for founder-led orgs with personal mission commitment. Lead with Shawn's story.",website:"https://guptafamilyfoundation.org"},
+  {name:"Hogg Foundation — UT Austin",type:"Texas Foundation",contact:"TGRC Staff",email:"tgrc@austin.utexas.edu",status:"Warm",notes:"TGRC appointment booked. Staff reviewing IAR profile for grant match recommendations.",website:"https://tgrc.hogg.utexas.edu"},
+];
+
+const TRACKER_STATUS = ["Prospecting","Applied","In Progress","Awarded","Declined"];
+
+// Persistent state using localStorage
+function getState(){
+  try{
+    return JSON.parse(localStorage.getItem('iar_state')||'{}');
+  }catch(e){return{}}
+}
+function saveState(s){
+  try{localStorage.setItem('iar_state',JSON.stringify(s))}catch(e){}
+}
+function getTracked(){
+  const t = getState().tracked||{};
+  // Normalize: return with string keys (as stored)
+  return t;
+}
+function getSaved(){
+  // Always return integers
+  return (getState().saved||[]).map(x=>parseInt(x)).filter(Boolean);
+}
+function getNotes(){return getState().notes||{}}
+
+/* ══════════════════════════════════════════════════════════
+   NAVIGATION
+══════════════════════════════════════════════════════════ */
+function showPage(id, btn){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  const pg = document.getElementById('page-'+id);
+  if(pg) pg.classList.add('active');
+  if(btn) btn.classList.add('active');
+  if(id==='tracker') renderTracker();
+  if(id==='calendar') renderCalendar();
+  if(id==='funders') renderFunders();
+  if(id==='veteran') renderVeteranGrants();
+  if(id==='writer') populateWriterSelect();
+}
+
+/* ══════════════════════════════════════════════════════════
+   GRANT CARDS
+══════════════════════════════════════════════════════════ */
+function scoreColor(s){
+  if(s>=85)return'#4a9e6a';
+  if(s>=70)return'var(--gold)';
+  return'var(--muted)';
+}
+function renderGrants(){
+  const rg=document.getElementById('f-region').value;
+  const ty=document.getElementById('f-type').value;
+  const dl=document.getElementById('f-deadline').value;
+  const fc=document.getElementById('f-focus').value;
+  const sc=document.getElementById('f-score').value;
+  const q=document.getElementById('g-search').value.toLowerCase().trim();
+  const saved=getSaved();
+  const tracked=getTracked();
+
+  let filtered=GRANTS.filter(g=>{
+    if(rg!=='all'&&g.region!==rg)return false;
+    if(ty!=='all'&&g.type!==ty)return false;
+    if(dl!=='all'&&g.deadline!==dl)return false;
+    if(fc!=='all'&&!g.focus.includes(fc))return false;
+    if(sc==='high'&&g.score<80)return false;
+    if(sc==='medium'&&g.score<60)return false;
+    if(q&&!g.name.toLowerCase().includes(q)&&!g.desc.toLowerCase().includes(q))return false;
+    return true;
+  });
+
+  filtered.sort((a,b)=>b.score-a.score);
+
+  document.getElementById('results-count').textContent=`${filtered.length} grant${filtered.length!==1?'s':''} shown`;
+  document.getElementById('d-total').textContent=filtered.length;
+  document.getElementById('d-urgent').textContent=filtered.filter(g=>g.deadline==='Urgent').length;
+  document.getElementById('d-saved').textContent=saved.length;
+  document.getElementById('d-tracked').textContent=Object.keys(tracked).length;
+  const pot=filtered.filter(g=>saved.includes(g.id)).reduce((a,g)=>a+g.amountNum,0);
+  document.getElementById('d-potential').textContent=pot>0?'$'+pot.toLocaleString():'$0';
+
+  const grid=document.getElementById('grants-grid');
+  const empty=document.getElementById('no-results');
+  if(!filtered.length){grid.innerHTML='';empty.style.display='block';return}
+  empty.style.display='none';
+
+  grid.innerHTML=filtered.map(g=>{
+    const isSaved=saved.includes(g.id);
+    const trackedStatus=tracked[g.id]||tracked[String(g.id)]||null;
+    const countdown=getCountdown(g.deadlineDate);
+    const regionBadge=g.region==='Austin'?'b-austin':g.region==='Texas'?'b-texas':'b-national';
+    const typeBadge=g.type==='Federal'?'b-fed':g.type==='Private Foundation'?'b-priv':g.type==='Community'?'b-comm':'b-corp';
+    const dlBadge=g.deadline==='Urgent'?'b-urgent':g.deadline==='Upcoming'?'b-upcoming':'b-open';
+    return`<div class="grant-card${g.veteran?' veteran':''}${isSaved?' saved':''}" onclick="openModal(${g.id})">
+      <div class="gc-top">
+        <div class="gc-name">${g.name}</div>
+        <div class="gc-actions" onclick="event.stopPropagation()">
+          <button class="icon-btn${isSaved?' active':''}" title="Save" onclick="toggleSave(${g.id})">${isSaved?'★':'☆'} Save</button>
+          <button class="icon-btn" title="How to Apply" onclick="openModal(${g.id})">? Apply</button>
+        </div>
+      </div>
+      <div class="badge-row">
+        <span class="badge ${regionBadge}">${g.region}</span>
+        <span class="badge ${typeBadge}">${g.type}</span>
+        <span class="badge ${dlBadge}">${g.deadline==='Open/Rolling'?'Rolling':g.deadline}</span>
+        ${g.veteran?'<span class="badge b-vet">★ Veteran</span>':''}
+        <span class="match-score" style="margin-left:auto">
+          <span style="font-size:10px;color:var(--muted)">Match</span>
+          <div class="score-bar-wrap"><div class="score-bar" style="width:${g.score}%;background:${scoreColor(g.score)}"></div></div>
+          <span style="color:${scoreColor(g.score)}">${g.score}%</span>
+        </span>
+      </div>
+      <div class="gc-desc">${g.desc}</div>
+      ${g.whyFit?`<div style="margin-bottom:8px;padding:.5rem .75rem;background:rgba(201,168,76,.06);border-left:2px solid var(--gold-dim);border-radius:0 var(--r) var(--r) 0"><span style="font-size:9px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);display:block;margin-bottom:3px">★ Why It Fits IAR</span><span style="font-size:11px;color:rgba(187,187,187,.85);line-height:1.55">${g.whyFit}</span></div>`:''}
+      <div class="gc-footer">
+        <span>💰 ${g.amount}</span>
+        ${countdown?`<span class="${countdown.urgent?'countdown urgent':'countdown'}">${countdown.text}</span>`:'<span class="countdown">Open / Rolling</span>'}
+        ${trackedStatus?`<span class="badge" style="background:var(--green-bg);color:var(--green);border:1px solid rgba(74,158,106,.3)">${trackedStatus}</span>`:''}
+        <a class="gc-link" href="${g.url}" target="_blank" rel="noopener" onclick="event.stopPropagation()">Visit →</a>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function getCountdown(dateStr){
+  if(!dateStr)return null;
+  const d=new Date(dateStr);
+  const now=new Date();
+  const diff=Math.ceil((d-now)/(1000*60*60*24));
+  if(diff<0)return{text:'Deadline passed',urgent:true};
+  if(diff===0)return{text:'Due TODAY',urgent:true};
+  if(diff<=7)return{text:`⚡ ${diff} day${diff!==1?'s':''} left`,urgent:true};
+  if(diff<=30)return{text:`📅 ${diff} days left`,urgent:false};
+  const mo=Math.round(diff/30);
+  return{text:`📅 ~${mo} month${mo!==1?'s':''} away`,urgent:false};
+}
+
+function toggleSave(id){
+  const intId = parseInt(id);
+  const s=getState();
+  s.saved=s.saved||[];
+  // Normalize all saved IDs to integers
+  s.saved = s.saved.map(x=>parseInt(x)).filter(Boolean);
+  const idx=s.saved.indexOf(intId);
+  if(idx>-1)s.saved.splice(idx,1);else s.saved.push(intId);
+  saveState(s);
+  renderGrants();
+  renderTracker();
+}
+
+/* ══════════════════════════════════════════════════════════
+   AI SEARCH
+══════════════════════════════════════════════════════════ */
+async function runAISearch(){
+  const q=document.getElementById('ai-query').value.trim();
+  if(!q)return;
+  const btn=document.getElementById('ai-search-btn');
+  const result=document.getElementById('ai-result');
+  btn.disabled=true;btn.textContent='Searching…';
+  result.innerHTML='<div class="ai-response"><span class="spinner"></span>AI is searching for grant opportunities tailored to I Am Redemption…</div>';
+  try{
+    const resp=await fetch(API_ENDPOINT,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-5',
+        max_tokens:1500,
+        system:`You are a grant research expert for I Am Redemption, a 501(c)(3) nonprofit in Austin, TX founded by combat veteran Shawn Livingston. Mission: supporting individuals impacted by addiction, incarceration, trauma, and loss. Programs include a podcast, speaking events, and community outreach. Shawn is a heroin addiction survivor and ultra runner, author of "100 Miles to Redemption."
+
+When asked about grants, provide 4-6 specific, real grant opportunities that match the query. For each grant use this EXACT format:
+
+## [Grant Name — Funder Name]
+**Amount:** [dollar range or "Varies"]
+**Deadline:** [deadline or "Open/Rolling"]
+**Why it fits IAR:** [1-2 sentences specific to I Am Redemption]
+**How to apply:** [URL and brief process]
+
+Be specific, practical, and actionable. Use ## headers for each grant name exactly as shown.`,
+        messages:[{role:'user',content:`Find grant opportunities for I Am Redemption nonprofit matching this query: "${q}". Give me real, actionable grants I can apply for right now.`}]
+      })
+    });
+    const data=await resp.json();
+    if(data.error){throw new Error(data.error.message||'API error')}
+    const text=data.content.filter(c=>c.type==='text').map(c=>c.text).join('\n');
+    result.innerHTML=`<div class="ai-response"><h3>AI Grant Research Results</h3><div style="font-size:10px;color:var(--muted);margin-bottom:.5rem">Click <strong>+ Add to Tracker</strong> on any grant to save it to your pipeline.</div>${formatAIText(text, true)}</div>`;
+  }catch(e){
+    result.innerHTML=`<div class="ai-response" style="color:var(--red)">Search error: ${e.message}</div>`;
+  }
+  btn.disabled=false;btn.textContent='Search with AI';
+}
+
+async function refreshGrants(){
+  const result=document.getElementById('ai-result');
+  result.innerHTML='<div class="ai-response"><span class="spinner"></span>AI finding the latest grant opportunities for I Am Redemption…</div>';
+  try{
+    const resp=await fetch(API_ENDPOINT,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-5',
+        max_tokens:1500,
+        system:`You are a grant expert for I Am Redemption, a 501(c)(3) nonprofit in Austin TX focused on addiction recovery, incarceration reentry, and trauma healing. Founded by combat veteran Shawn Livingston. Provide 5 strong grant opportunities currently available in 2026. Use this EXACT format for each:
+
+## [Grant Name — Funder Name]
+**Amount:** [dollar range or "Varies"]
+**Deadline:** [deadline or "Open/Rolling"]
+**Why it fits IAR:** [1-2 specific sentences]
+**How to apply:** [URL and brief process]
+
+Use ## headers for each grant exactly as shown.`,
+        messages:[{role:'user',content:'Give me the 5 best grant opportunities available right now in 2026 for I Am Redemption. Include federal, foundation, and corporate options. Prioritize ones with open applications or upcoming deadlines.'}]
+      })
+    });
+    const data=await resp.json();
+    if(data.error){throw new Error(data.error.message||'API error')}
+    const text=data.content.filter(c=>c.type==='text').map(c=>c.text).join('\n');
+    result.innerHTML=`<div class="ai-response"><h3>Latest Grant Opportunities</h3><div style="font-size:10px;color:var(--muted);margin-bottom:.5rem">Refreshed ${new Date().toLocaleDateString()} · Click <strong>+ Add to Tracker</strong> to save any grant to your pipeline.</div>${formatAIText(text, true)}</div>`;
+  }catch(e){
+    result.innerHTML=`<div class="ai-response" style="color:var(--red)">Refresh error: ${e.message}</div>`;
+  }
+}
+
+// Counter for AI-discovered grants (start above built-in IDs)
+let aiGrantCounter = 1000;
+
+function getAIGrants(){
+  try{ return JSON.parse(localStorage.getItem('iar_ai_grants')||'[]'); }catch(e){return[];}
+}
+function saveAIGrants(list){
+  try{ localStorage.setItem('iar_ai_grants', JSON.stringify(list)); }catch(e){}
+}
+function loadAIGrants(){
+  const list = getAIGrants();
+  list.forEach(g=>{ if(!GRANTS.find(x=>x.id===g.id)) GRANTS.push(g); });
+  if(list.length) aiGrantCounter = Math.max(aiGrantCounter, ...list.map(g=>g.id+1));
+}
+
+function addAIGrantToTracker(name, amount, deadline, desc, url, btn) {
+  // Check if already in GRANTS by name
+  const existing = GRANTS.find(g => g.name.toLowerCase() === name.toLowerCase());
+  if(existing){
+    const s = getState();
+    s.saved = (s.saved||[]).map(x=>parseInt(x)).filter(Boolean);
+    if(!s.saved.includes(existing.id)) s.saved.push(existing.id);
+    saveState(s);
+    btn.textContent = '✓ Added';
+    btn.disabled = true;
+    renderGrants();
+    populateWriterSelect();
+    return;
+  }
+  // Create new entry with a valid URL
+  const grantUrl = (url && url !== '#' && url.startsWith('http')) ? url : 'https://www.grants.gov';
+  const newGrant = {
+    id: aiGrantCounter++,
+    name: name,
+    region: 'National',
+    type: 'Private Foundation',
+    deadline: deadline || 'Open/Rolling',
+    deadlineDate: null,
+    amount: amount || 'Varies',
+    amountNum: 0,
+    focus: ['addiction','reentry','trauma'],
+    score: 75,
+    veteran: false,
+    url: grantUrl,
+    desc: desc || 'Grant discovered via AI search. Review details and update URL.',
+    whyFit: 'Found via AI search — review and add details as you research this opportunity.',
+    steps: ['Research this grant opportunity','Review funder guidelines','Submit letter of inquiry or application'],
+    tip: 'This grant was added from AI search results. Verify current details before applying.',
+    aiAdded: true
+  };
+  GRANTS.push(newGrant);
+  // Persist AI grants
+  const aiList = getAIGrants();
+  aiList.push(newGrant);
+  saveAIGrants(aiList);
+  // Save to pipeline
+  const s = getState();
+  s.saved = (s.saved||[]).map(x=>parseInt(x)).filter(Boolean);
+  s.saved.push(newGrant.id);
+  saveState(s);
+  btn.textContent = '✓ Added to Tracker';
+  btn.disabled = true;
+  btn.style.borderColor = 'var(--green)';
+  btn.style.color = 'var(--green)';
+  renderGrants();
+  populateWriterSelect();
+}
+
+function formatAIText(text, showAddButtons){
+  // Split on grant headers (## or bold lines that look like grant names)
+  // We'll parse sections separated by ## headers
+  const sections = text.split(/(?=#{1,3}\s)/);
+  
+  let html = '';
+  sections.forEach(section => {
+    const headerMatch = section.match(/^#{1,3}\s+(.+?)\n/);
+    if(headerMatch && showAddButtons !== false){
+      const grantName = headerMatch[1].replace(/\*\*/g,'').trim();
+      // Extract amount-like string
+      const amountMatch = section.match(/\$[\d,K,M+–\-]+(?:\s*–\s*\$[\d,K,M+]+)?/i);
+      const amount = amountMatch ? amountMatch[0] : 'Varies';
+      // Extract deadline hints
+      const deadlineMatch = section.match(/deadline[^\n]*?([A-Z][a-z]+\s+\d{4}|rolling|open|Q[1-4]\s+\d{4})/i);
+      const deadline = deadlineMatch ? deadlineMatch[1] : 'Open/Rolling';
+      // Body text for desc
+      const bodyText = section.replace(/^#{1,3}\s+.+?\n/, '').replace(/\*\*(.*?)\*\*/g,'$1').replace(/\n/g,' ').trim().substring(0, 200);
+      
+      const btnId = 'aibtn_' + Math.random().toString(36).substr(2,8);
+      const escapedName = grantName.replace(/'/g,"\\'");
+      const escapedAmt = amount.replace(/'/g,"\\'");
+      const escapedDeadline = deadline.replace(/'/g,"\\'");
+      const escapedBody = bodyText.replace(/'/g,"\\'").replace(/"/g,'&quot;');
+      // Try to extract a URL from this section
+      const urlMatch = section.match(/https?:\/\/[^\s\)\]<>"]+/);
+      const grantUrl = urlMatch ? urlMatch[0] : '';
+      const escapedUrl = grantUrl.replace(/'/g,"\\'");
+      
+      html += `<div style="font-family:var(--font-d);font-size:17px;letter-spacing:.04em;color:var(--gold);margin:.75rem 0 .25rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px">
+        <span>${grantName}</span>
+        <button id="${btnId}" class="btn-outline" style="font-size:10px;padding:4px 10px" onclick="addAIGrantToTracker('${escapedName}','${escapedAmt}','${escapedDeadline}','${escapedBody}','${escapedUrl}',this)">+ Add to Tracker</button>
+      </div>`;
+      html += section.replace(/^#{1,3}\s+.+?\n/, '')
+        .replace(/\*\*(.*?)\*\*/g,'<strong style="color:var(--white)">$1</strong>')
+        .replace(/\n\n/g,'<br><br>')
+        .replace(/\n/g,'<br>');
+    } else {
+      html += section
+        .replace(/\*\*(.*?)\*\*/g,'<strong style="color:var(--white)">$1</strong>')
+        .replace(/#{1,3}\s(.+)/g,'<div style="font-family:var(--font-d);font-size:17px;letter-spacing:.04em;color:var(--gold);margin:.75rem 0 .25rem">$1</div>')
+        .replace(/\n\n/g,'<br><br>')
+        .replace(/\n/g,'<br>');
+    }
+  });
+  return html || text.replace(/\*\*(.*?)\*\*/g,'<strong style="color:var(--white)">$1</strong>')
+    .replace(/#{1,3}\s(.+)/g,'<div style="font-family:var(--font-d);font-size:17px;letter-spacing:.04em;color:var(--gold);margin:.75rem 0 .25rem">$1</div>')
+    .replace(/\n\n/g,'<br><br>')
+    .replace(/\n/g,'<br>');
+}
+
+/* ══════════════════════════════════════════════════════════
+   MODAL — HOW TO APPLY
+══════════════════════════════════════════════════════════ */
+let currentModalGrant=null;
+function openModal(id){
+  const g=GRANTS.find(x=>x.id===id);
+  if(!g)return;
+  currentModalGrant=g;
+  const countdown=getCountdown(g.deadlineDate);
+  document.getElementById('modal-title').textContent=g.name;
+  document.getElementById('modal-url').href=g.url&&g.url!=='#'?g.url:'https://www.grants.gov';
+  document.getElementById('modal-url').textContent = (g.url && g.url !== '#') ? 'Visit Grant Page →' : 'Search on Grants.gov →';
+  document.getElementById('modal-meta').innerHTML=`
+    <div class="meta-box"><div class="meta-box-label">Amount</div><div class="meta-box-val">${g.amount}</div></div>
+    <div class="meta-box"><div class="meta-box-label">Deadline</div><div class="meta-box-val">${countdown?countdown.text:(g.deadlineDate?new Date(g.deadlineDate).toLocaleDateString():'Open / Rolling')}</div></div>
+    <div class="meta-box"><div class="meta-box-label">Type</div><div class="meta-box-val">${g.type}</div></div>
+    <div class="meta-box"><div class="meta-box-label">Match Score</div><div class="meta-box-val" style="color:${scoreColor(g.score)}">${g.score}% fit</div></div>`;
+  document.getElementById('modal-steps').innerHTML=(g.steps||[]).map((s,i)=>`
+    <div class="step-item">
+      <div class="step-num">0${i+1}</div>
+      <div class="step-content"><p>${s}</p></div>
+    </div>`).join('');
+  document.getElementById('modal-tip').textContent=g.tip||'';
+  document.getElementById('modal').classList.add('open');
+}
+function closeModal(){document.getElementById('modal').classList.remove('open')}
+function saveFromModal(){if(currentModalGrant){toggleSave(currentModalGrant.id);closeModal()}}
+function draftFromModal(){
+  if(currentModalGrant){
+    showPage('writer');
+    setTimeout(()=>{
+      const sel=document.getElementById('writer-grant');
+      if(sel)sel.value=currentModalGrant.id;
+    },100);
+    closeModal();
+  }
+}
+
+/* ══════════════════════════════════════════════════════════
+   TRACKER
+══════════════════════════════════════════════════════════ */
+function renderTracker(){
+  const tracked=getTracked();
+  const saved=getSaved();
+  const board=document.getElementById('tracker-board');
+  const noteSelect=document.getElementById('note-grant');
+
+  // Normalize all IDs to integers for reliable comparison
+  const savedInts = saved.map(id=>parseInt(id)).filter(Boolean);
+  const trackedKeys = Object.keys(tracked);
+
+  // populate note select — show engaged grants first, then the rest
+  const engagedGrants = GRANTS.filter(g=>savedInts.includes(g.id)||trackedKeys.includes(String(g.id)));
+  const otherGrants = GRANTS.filter(g=>!savedInts.includes(g.id)&&!trackedKeys.includes(String(g.id)));
+  const allForNotes = [...engagedGrants, ...otherGrants];
+  const prevNoteVal = noteSelect.value;
+  noteSelect.innerHTML = allForNotes.map(g=>`<option value="${g.id}">${g.name}</option>`).join('');
+  if(prevNoteVal && allForNotes.find(g=>String(g.id)===String(prevNoteVal))) noteSelect.value = prevNoteVal;
+
+  board.innerHTML=TRACKER_STATUS.map(status=>{
+    let items;
+    if(status==='Prospecting'){
+      // Saved grants not yet in any tracked status
+      items = savedInts
+        .filter(id=>!tracked[id]&&!tracked[String(id)])
+        .map(id=>GRANTS.find(g=>g.id===id))
+        .filter(Boolean);
+    } else {
+      // Match tracked by both number and string key
+      items = GRANTS.filter(g=>tracked[g.id]===status||tracked[String(g.id)]===status);
+    }
+    const cls=status.toLowerCase().replace(' ','-');
+    return`<div class="tracker-col">
+      <div class="tracker-col-head">
+        <span class="tracker-col-title ${cls}">${status}</span>
+        <span class="tracker-count">${items.length}</span>
+      </div>
+      <div class="tracker-items" data-status="${status}">
+        ${items.length?items.map(g=>`
+          <div class="tracker-item" data-id="${g.id}" draggable="true" onclick="cycleStatus(${g.id})">
+            <div class="tracker-item-name">${g.name}</div>
+            <div class="tracker-item-meta">${g.region} · ${g.type}</div>
+            <div class="tracker-item-amount">${g.amount}</div>
+          </div>`).join(''):'<div style="font-size:11px;color:var(--muted);padding:.5rem;text-align:center">None yet</div>'}
+      </div>
+    </div>`;
+  }).join('');
+
+  renderNotes();
+  enableDragDrop();
+  updateProgressRing();
+}
+
+function cycleStatus(id){
+  const s=getState();
+  s.tracked=s.tracked||{};
+  // Normalize: always store by string key for consistency
+  const key=String(id);
+  const curr=s.tracked[key]||s.tracked[id];
+  const idx=curr?TRACKER_STATUS.indexOf(curr):0;
+  const next=TRACKER_STATUS[(idx+1)%TRACKER_STATUS.length];
+  // Clean up any old integer key, store only string key
+  delete s.tracked[id];
+  s.tracked[key]=next;
+  saveState(s);
+  if(next==='Awarded') launchConfetti();
+  renderTracker();
+  renderGrants();
+}
+
+function addNote(){
+  const grantId=parseInt(document.getElementById('note-grant').value);
+  const text=document.getElementById('note-text').value.trim();
+  if(!text)return;
+  const s=getState();
+  s.notes=s.notes||{};
+  s.notes[grantId]=s.notes[grantId]||[];
+  s.notes[grantId].push({text,date:new Date().toLocaleDateString()});
+  saveState(s);
+  document.getElementById('note-text').value='';
+  renderNotes();
+}
+
+function renderNotes(){
+  const notes=getNotes();
+  const grantId=parseInt(document.getElementById('note-grant').value);
+  const myNotes=notes[grantId]||[];
+  document.getElementById('notes-display').innerHTML=myNotes.length
+    ?myNotes.slice().reverse().map(n=>`<div style="background:var(--graphite);border:1px solid var(--mid);border-radius:var(--r);padding:.5rem .75rem;font-size:12px"><span style="color:var(--muted);margin-right:.5rem">${n.date}</span>${n.text}</div>`).join('')
+    :'<div style="font-size:12px;color:var(--muted)">No notes yet for this grant.</div>';
+}
+
+/* ══════════════════════════════════════════════════════════
+   AI WRITER
+══════════════════════════════════════════════════════════ */
+function populateWriterSelect(){
+  const sel=document.getElementById('writer-grant');
+  if(!sel) return;
+  // Always rebuild so AI-added grants appear; preserve current selection
+  const currentVal = sel.value;
+  sel.innerHTML=GRANTS.map(g=>`<option value="${g.id}">${g.name}</option>`).join('');
+  if(currentVal) sel.value=currentVal;
+}
+
+async function runWriter(){
+  // Make sure dropdown is populated
+  populateWriterSelect();
+
+  const grantEl=document.getElementById('writer-grant');
+  const grantId=parseInt(grantEl.value);
+  const grant=GRANTS.find(g=>g.id===grantId);
+  const type=document.getElementById('writer-type').value;
+  const context=document.getElementById('writer-context').value.trim();
+  const btn=document.getElementById('writer-btn');
+  const output=document.getElementById('writer-output');
+  const result=document.getElementById('writer-result');
+
+  // Guard: make sure we have a valid grant
+  if(!grant){
+    result.innerHTML='<div style="font-size:11px;color:var(--red);margin-top:.5rem">Please select a grant from the dropdown first.</div>';
+    return;
+  }
+
+  const typeLabels={executive:'Executive Summary',need:'Statement of Need',program:'Program Description',impact:'Expected Impact & Outcomes',budget:'Budget Narrative',org:'Organizational Capacity',veteran:'Veteran Angle / Founder Story',loi:'Letter of Inquiry (LOI)'};
+
+  btn.disabled=true;btn.textContent='Generating…';
+  output.value='Writing your grant narrative…';
+  result.innerHTML='';
+
+  const systemPrompt=`You are an expert nonprofit grant writer for I Am Redemption, a 501(c)(3) nonprofit in Austin, TX.
+
+ORGANIZATION PROFILE:
+- Founded by Shawn Livingston, a combat veteran, heroin addiction survivor, ultra runner, and author of "100 Miles to Redemption"
+- Mission: Supporting individuals and communities impacted by addiction, incarceration, trauma, and loss
+- Programs: Podcast amplifying recovery stories, live events, speaking engagements, community outreach
+- 501(c)(3) status confirmed
+- Tagline: "Redemption starts with one moment. Community makes it last."
+- Core belief: No past is too broken and no person is beyond hope.
+
+Write compelling, authentic grant narrative. Use Shawn's personal story where appropriate. Be specific, professional, and emotionally resonant. Match the tone to the grant type. Output only the narrative text — no preamble, no meta-commentary, no labels.`;
+
+  try{
+    const resp=await fetch(API_ENDPOINT,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-5',
+        max_tokens:1200,
+        system:systemPrompt,
+        messages:[{role:'user',content:`Write a ${typeLabels[type]} for this grant application:
+
+Grant: ${grant.name}
+Funder type: ${grant.type}
+Region: ${grant.region}
+Grant description: ${grant.desc}
+Focus areas: ${(grant.focus||[]).join(', ')}
+Estimated award: ${grant.amount}
+${context?`\nAdditional funder context: ${context}`:''}
+
+Write a complete, compelling ${typeLabels[type]} of approximately 350-500 words tailored to this specific funder's priorities.`}]
+      })
+    });
+
+    if(!resp.ok){
+      const errData=await resp.json().catch(()=>({}));
+      throw new Error(errData?.error?.message||`HTTP ${resp.status}`);
+    }
+
+    const data=await resp.json();
+    if(data.error){throw new Error(data.error.message||'API error')}
+    const text=data.content.filter(c=>c.type==='text').map(c=>c.text).join('\n');
+    output.value=text;
+    result.innerHTML='<div style="font-size:11px;color:var(--green);margin-top:.5rem">✓ Draft generated — edit freely above, then copy or refine.</div>';
+  }catch(e){
+    output.value='';
+    result.innerHTML=`<div style="font-size:11px;color:var(--red);margin-top:.5rem">Error: ${e.message}</div>`;
+  }
+  btn.disabled=false;btn.textContent='Generate Draft';
+}
+
+async function refineWriter(){
+  const output=document.getElementById('writer-output');
+  const current=output.value.trim();
+  if(!current||current.length<50)return;
+  output.value='Refining with AI…';
+  try{
+    const resp=await fetch(API_ENDPOINT,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-5',
+        max_tokens:1000,
+        messages:[{role:'user',content:`You are an expert grant writer. Refine this grant narrative to be more compelling, specific, and emotionally resonant while keeping the same structure and key facts. Make it stronger:\n\n${current}`}]
+      })
+    });
+    const data=await resp.json();
+    const text=data.content.filter(c=>c.type==='text').map(c=>c.text).join('\n');
+    output.value=text;
+  }catch(e){output.value=current}
+}
+
+function copyWriter(){
+  const t=document.getElementById('writer-output').value;
+  navigator.clipboard.writeText(t).then(()=>{
+    const btn=event.target;btn.textContent='Copied!';
+    setTimeout(()=>btn.textContent='Copy Text',2000);
+  });
+}
+
+/* ══════════════════════════════════════════════════════════
+   CALENDAR
+══════════════════════════════════════════════════════════ */
+let calYear=2026,calMonth=2; // March 2026
+function changeMonth(dir){calMonth+=dir;if(calMonth>11){calMonth=0;calYear++}if(calMonth<0){calMonth=11;calYear--}renderCalendar()}
+
+function renderCalendar(){
+  const months=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  document.getElementById('cal-month-label').textContent=`${months[calMonth]} ${calYear}`;
+  const firstDay=new Date(calYear,calMonth,1).getDay();
+  const daysInMonth=new Date(calYear,calMonth+1,0).getDate();
+  const today=new Date();
+
+  // Gather grants with actual dates this month
+  const monthGrants=GRANTS.filter(g=>{
+    if(!g.deadlineDate)return false;
+    const d=new Date(g.deadlineDate);
+    return d.getFullYear()===calYear&&d.getMonth()===calMonth;
+  });
+
+  let cells='';
+  for(let i=0;i<firstDay;i++) cells+=`<div class="cal-day other-month"></div>`;
+  for(let d=1;d<=daysInMonth;d++){
+    const isToday=d===today.getDate()&&calMonth===today.getMonth()&&calYear===today.getFullYear();
+    const dayGrants=monthGrants.filter(g=>new Date(g.deadlineDate).getDate()===d);
+    cells+=`<div class="cal-day${isToday?' today':''}">
+      <div class="cal-date">${d}</div>
+      ${dayGrants.map(g=>`<div class="cal-event ${g.deadline==='Urgent'?'urgent':'upcoming'}" title="${g.name}">${g.name.split('—')[0].trim()}</div>`).join('')}
+    </div>`;
+  }
+  document.getElementById('cal-body').innerHTML=cells;
+
+  // Timeline
+  const upcoming=GRANTS.filter(g=>g.deadlineDate).map(g=>({...g,d:new Date(g.deadlineDate)})).filter(g=>g.d>=new Date()).sort((a,b)=>a.d-b.d);
+  document.getElementById('timeline-list').innerHTML=upcoming.length
+    ?upcoming.slice(0,12).map(g=>`
+      <div class="timeline-item">
+        <div class="timeline-date">${g.d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}</div>
+        <div>
+          <div class="timeline-name">${g.name}</div>
+          <div class="timeline-amt">${g.amount} · ${g.type} · ${g.region}</div>
+        </div>
+      </div>`).join('')
+    :'<div class="empty-state"><div class="big">All Clear</div>No upcoming deadlines this period.</div>';
+}
+
+/* ══════════════════════════════════════════════════════════
+   FUNDERS CRM
+══════════════════════════════════════════════════════════ */
+function renderFunders(){
+  const filter=document.getElementById('funder-status-filter').value;
+  const q=document.getElementById('funder-search').value.toLowerCase().trim();
+  const filtered=FUNDERS.filter(f=>{
+    if(filter!=='all'&&f.status!==filter)return false;
+    if(q&&!f.name.toLowerCase().includes(q)&&!f.notes.toLowerCase().includes(q))return false;
+    return true;
+  });
+  const statusClass={Cold:'fs-cold',Warm:'fs-warm',Active:'fs-active'};
+  document.getElementById('funder-grid').innerHTML=filtered.map(f=>`
+    <div class="funder-card">
+      <div class="funder-avatar">${f.name.substring(0,2).toUpperCase()}</div>
+      <div class="funder-name">${f.name}</div>
+      <div class="funder-type">${f.type}</div>
+      <div class="funder-contact">📧 ${f.email}</div>
+      <span class="funder-status ${statusClass[f.status]||'fs-cold'}">${f.status} Relationship</span>
+      <div class="funder-notes">${f.notes}</div>
+      <div class="funder-actions">
+        <a href="${f.website}" target="_blank" class="btn-outline" style="font-size:10px;padding:5px 12px">Visit →</a>
+        <button class="btn-outline" style="font-size:10px;padding:5px 12px" onclick="warmFunder('${f.name}',this)">Mark Warm</button>
+      </div>
+    </div>`).join('');
+}
+
+function warmFunder(name,btn){
+  const f=FUNDERS.find(x=>x.name===name);
+  if(f){f.status=f.status==='Cold'?'Warm':f.status==='Warm'?'Active':'Cold';}
+  renderFunders();
+}
+
+/* ══════════════════════════════════════════════════════════
+   VETERAN GRANTS
+══════════════════════════════════════════════════════════ */
+function renderVeteranGrants(){
+  const veteranGrants=GRANTS.filter(g=>g.veteran||g.focus.includes('veteran'));
+  const saved=getSaved();
+  const grid=document.getElementById('veteran-grants-grid');
+  grid.innerHTML=veteranGrants.map(g=>{
+    const isSaved=saved.includes(g.id);
+    const countdown=getCountdown(g.deadlineDate);
+    return`<div class="grant-card veteran" onclick="openModal(${g.id})">
+      <div class="gc-top">
+        <div class="gc-name">${g.name}</div>
+        <button class="icon-btn${isSaved?' active':''}" onclick="event.stopPropagation();toggleSave(${g.id})">${isSaved?'★':'☆'} Save</button>
+      </div>
+      <div class="badge-row">
+        <span class="badge b-vet">★ Veteran-Aligned</span>
+        <span class="badge ${g.type==='Corporate'?'b-corp':'b-priv'}">${g.type}</span>
+        <span class="match-score" style="margin-left:auto">
+          <span style="font-size:10px;color:var(--muted)">Match</span>
+          <div class="score-bar-wrap"><div class="score-bar" style="width:${g.score}%;background:${scoreColor(g.score)}"></div></div>
+          <span style="color:${scoreColor(g.score)}">${g.score}%</span>
+        </span>
+      </div>
+      <div class="gc-desc">${g.desc}</div>
+      <div class="gc-footer">
+      ${g.whyFit?`<div style="margin-bottom:8px;padding:.5rem .75rem;background:rgba(74,126,181,.07);border-left:2px solid #5b8ab5;border-radius:0 var(--r) var(--r) 0"><span style="font-size:9px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#7db3dc;display:block;margin-bottom:3px">★ Why It Fits IAR</span><span style="font-size:11px;color:rgba(187,187,187,.85);line-height:1.55">${g.whyFit}</span></div>`:''}
+        <span>💰 ${g.amount}</span>
+        ${countdown?`<span class="${countdown.urgent?'countdown urgent':'countdown'}">${countdown.text}</span>`:'<span class="countdown">Open / Rolling</span>'}
+        <a class="gc-link" href="${g.url}" target="_blank" onclick="event.stopPropagation()">Apply →</a>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+/* ══════════════════════════════════════════════════════════
+   EXPORT
+══════════════════════════════════════════════════════════ */
+function exportCSV(){
+  const headers=['Name','Region','Type','Deadline','Amount','Match Score','URL','Focus Areas'];
+  const rows=GRANTS.map(g=>[g.name,g.region,g.type,g.deadline,g.amount,g.score+'%',g.url,(g.focus||[]).join('; ')]);
+  const csv=[headers,...rows].map(r=>r.map(c=>`"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');
+  const blob=new Blob([csv],{type:'text/csv'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='IAR-grants-'+new Date().toISOString().slice(0,10)+'.csv';
+  a.click();
+}
+
+function exportPDF(){
+  window.print();
+}
+
+/* ══════════════════════════════════════════════════════════
+   EMAIL SUBSCRIBE
+══════════════════════════════════════════════════════════ */
+function subscribeEmail(){
+  const emailEl=document.getElementById('email-input');
+  const email=emailEl.value.trim();
+  if(!email||!email.includes('@')){
+    emailEl.style.borderColor='var(--red)';
+    emailEl.placeholder='Please enter a valid email';
+    setTimeout(()=>{emailEl.style.borderColor='';emailEl.placeholder='your@email.com'},2500);
+    return;
+  }
+  const s=getState();
+  s.emailSub=email;
+  saveState(s);
+  const strip=emailEl.closest('.email-strip');
+  strip.innerHTML=`<div style="text-align:center;width:100%;padding:.25rem 0">
+    <div style="font-family:var(--font-d);font-size:22px;letter-spacing:.04em;color:var(--green);margin-bottom:.25rem">✓ Subscribed!</div>
+    <div style="font-size:12px;color:var(--muted)">Grant alerts saved for <strong style="color:var(--white)">${email}</strong>. We'll notify you when new opportunities match I Am Redemption's mission.</div>
+  </div>`;
+}
+
+
+
+/* ══════════════════════════════════════════════════════════
+   ANIMATED STAT COUNTERS
+══════════════════════════════════════════════════════════ */
+function animateCounter(el, target, prefix, suffix, duration){
+  if(!el) return;
+  const start = performance.now();
+  const isNum = typeof target === 'number';
+  function tick(now){
+    const p = Math.min((now-start)/duration, 1);
+    const ease = 1-Math.pow(1-p,3);
+    if(isNum){
+      const val = Math.round(target*ease);
+      el.textContent = (prefix||'') + val.toLocaleString() + (suffix||'');
+    }
+    if(p<1) requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+}
+
+function runCounters(){
+  const total = GRANTS.length;
+  const saved = getSaved().length;
+  const tracked = Object.keys(getTracked()).length;
+  const urgent = GRANTS.filter(g=>g.deadline==='Urgent').length;
+  const pot = GRANTS.filter(g=>getSaved().includes(g.id)).reduce((a,g)=>a+g.amountNum,0);
+  animateCounter(document.getElementById('d-total'), total, '', '', 800);
+  animateCounter(document.getElementById('d-urgent'), urgent, '', '', 600);
+  animateCounter(document.getElementById('d-saved'), saved, '', '', 700);
+  animateCounter(document.getElementById('d-tracked'), tracked, '', '', 700);
+  animateCounter(document.getElementById('d-potential'), pot, '$', '', 1200);
+  updateProgressRing();
+}
+
+/* ══════════════════════════════════════════════════════════
+   PROGRESS RING
+══════════════════════════════════════════════════════════ */
+function updateProgressRing(){
+  const saved = getSaved().length;
+  const tracked = Object.keys(getTracked()).length;
+  const engaged = new Set([...getSaved(), ...Object.keys(getTracked()).map(Number)]).size;
+  const total = GRANTS.length;
+  const pct = Math.round((engaged / total) * 100);
+  const circle = document.getElementById('ring-circle');
+  const pctEl = document.getElementById('ring-pct');
+  const subEl = document.getElementById('ring-sub');
+  if(circle){
+    const circumference = 138.2;
+    const offset = circumference * (1 - pct/100);
+    setTimeout(()=>{ circle.style.strokeDashoffset = offset; }, 200);
+    if(pct >= 50) circle.style.stroke = 'var(--green)';
+    else if(pct >= 25) circle.style.stroke = 'var(--gold)';
+    else circle.style.stroke = 'var(--red)';
+  }
+  if(pctEl) setTimeout(()=>animateCounter(pctEl, pct, '', '%', 1000), 200);
+  if(subEl) subEl.textContent = `${engaged} of ${total} engaged`;
+}
+
+/* ══════════════════════════════════════════════════════════
+   TODAY'S FOCUS CARD
+══════════════════════════════════════════════════════════ */
+function renderFocusCard(){
+  const wrap = document.getElementById('focus-card-wrap');
+  if(!wrap) return;
+  const saved = getSaved();
+  const tracked = getTracked();
+  // Pick top untracked high-score grant, prioritizing urgent/upcoming
+  const candidates = GRANTS
+    .filter(g => !tracked[g.id] && !g.aiAdded)
+    .sort((a,b) => {
+      const urgA = a.deadline==='Urgent'?3:a.deadline==='Upcoming'?2:1;
+      const urgB = b.deadline==='Urgent'?3:b.deadline==='Upcoming'?2:1;
+      if(urgA!==urgB) return urgB-urgA;
+      return b.score - a.score;
+    });
+  const g = candidates[0];
+  if(!g){ wrap.innerHTML=''; return; }
+  const countdown = getCountdown(g.deadlineDate);
+  wrap.innerHTML = `<div class="focus-card">
+    <div>
+      <div class="focus-badge">⭐ Today's Top Priority</div>
+      <div class="focus-title">${g.name}</div>
+      <div class="focus-why">${g.whyFit || g.desc}</div>
+      <div style="margin-top:.5rem;font-size:11px;color:var(--muted)">
+        💰 ${g.amount} &nbsp;·&nbsp; 
+        ${countdown ? `<span style="color:${countdown.urgent?'#f07060':'var(--gold)'}">${countdown.text}</span>` : '<span style="color:var(--green)">Open / Rolling</span>'}
+        &nbsp;·&nbsp; <span style="color:${scoreColor(g.score)}">${g.score}% match</span>
+      </div>
+    </div>
+    <div class="focus-actions">
+      <button class="btn-gold" style="font-size:11px;padding:8px 16px" onclick="openModal(${g.id})">How to Apply →</button>
+      <button class="btn-outline" style="font-size:10px;padding:7px 14px" onclick="toggleSave(${g.id});renderFocusCard()">☆ Save</button>
+    </div>
+  </div>`;
+}
+
+/* ══════════════════════════════════════════════════════════
+   URGENT ACTION BANNER
+══════════════════════════════════════════════════════════ */
+function renderActionBanner(){
+  const wrap = document.getElementById('action-banner-wrap');
+  if(!wrap) return;
+  const urgent = GRANTS.filter(g => {
+    if(!g.deadlineDate) return false;
+    const diff = Math.ceil((new Date(g.deadlineDate) - new Date()) / (1000*60*60*24));
+    return diff >= 0 && diff <= 14;
+  }).sort((a,b) => new Date(a.deadlineDate) - new Date(b.deadlineDate));
+  if(!urgent.length){ wrap.innerHTML=''; return; }
+  const g = urgent[0];
+  const diff = Math.ceil((new Date(g.deadlineDate) - new Date()) / (1000*60*60*24));
+  wrap.innerHTML = `<div class="action-banner">
+    <span class="ab-icon">⚡</span>
+    <div><strong>${g.name}</strong> deadline in <strong style="color:#f07060">${diff} day${diff!==1?'s':''}</strong> — 
+    <a href="#" onclick="event.preventDefault();openModal(${g.id})">view application steps</a>
+    &nbsp;·&nbsp; <a href="${g.url}" target="_blank">visit grant page →</a></div>
+  </div>`;
+}
+
+/* ══════════════════════════════════════════════════════════
+   LIVE COUNTDOWN TICKS (updates every minute)
+══════════════════════════════════════════════════════════ */
+function startLiveCountdowns(){
+  setInterval(()=>{
+    document.querySelectorAll('.countdown[data-deadline]').forEach(el=>{
+      const d = new Date(el.dataset.deadline);
+      const diff = Math.ceil((d - new Date())/(1000*60*60*24));
+      if(diff <= 7 && diff >= 0){
+        const h = Math.floor((d - new Date())/(1000*60*60)) % 24;
+        el.textContent = `⚡ ${diff}d ${h}h left`;
+      }
+    });
+  }, 60000);
+}
+
+/* ══════════════════════════════════════════════════════════
+   CONFETTI BURST
+══════════════════════════════════════════════════════════ */
+function launchConfetti(){
+  const colors = ['#c9a84c','#f0c040','#4a9e6a','#4a7eb5','#fff','#e8964a'];
+  for(let i=0; i<60; i++){
+    const el = document.createElement('div');
+    el.className = 'confetti-piece';
+    el.style.cssText = `
+      left:${Math.random()*100}vw;
+      top:-20px;
+      background:${colors[Math.floor(Math.random()*colors.length)]};
+      width:${6+Math.random()*8}px;
+      height:${6+Math.random()*8}px;
+      border-radius:${Math.random()>0.5?'50%':'2px'};
+      animation-duration:${1.8+Math.random()*1.5}s;
+      animation-delay:${Math.random()*0.6}s;
+    `;
+    document.body.appendChild(el);
+    el.addEventListener('animationend', ()=>el.remove());
+  }
+}
+
+/* ══════════════════════════════════════════════════════════
+   DRAG-AND-DROP KANBAN
+══════════════════════════════════════════════════════════ */
+let dragId = null;
+
+function enableDragDrop(){
+  document.querySelectorAll('.tracker-item').forEach(item=>{
+    item.draggable = true;
+    item.addEventListener('dragstart', e=>{
+      dragId = parseInt(item.dataset.id);
+      setTimeout(()=>item.classList.add('dragging'),0);
+      e.dataTransfer.effectAllowed = 'move';
+    });
+    item.addEventListener('dragend', ()=>item.classList.remove('dragging'));
+  });
+
+  document.querySelectorAll('.tracker-items').forEach(col=>{
+    col.addEventListener('dragover', e=>{
+      e.preventDefault();
+      col.classList.add('drag-over');
+      e.dataTransfer.dropEffect = 'move';
+    });
+    col.addEventListener('dragleave', ()=>col.classList.remove('drag-over'));
+    col.addEventListener('drop', e=>{
+      e.preventDefault();
+      col.classList.remove('drag-over');
+      const newStatus = col.dataset.status;
+      if(dragId && newStatus){
+        const s = getState();
+        s.tracked = s.tracked||{};
+        const key = String(dragId);
+        // Clean up any old integer key
+        delete s.tracked[dragId];
+        s.tracked[key] = newStatus;
+        saveState(s);
+        if(newStatus === 'Awarded') launchConfetti();
+        renderTracker();
+        renderGrants();
+        updateProgressRing();
+      }
+    });
+  });
+}
+
+/* ══════════════════════════════════════════════════════════
+   FLOATING AI ADVISOR
+══════════════════════════════════════════════════════════ */
+let advisorOpen = false;
+
+function toggleAdvisor(){
+  advisorOpen = !advisorOpen;
+  const panel = document.getElementById('advisor-panel');
+  panel.classList.toggle('open', advisorOpen);
+  if(advisorOpen && document.getElementById('advisor-body').children.length <= 1){
+    runAdvisor();
+  }
+}
+
+async function runAdvisor(){
+  const body = document.getElementById('advisor-body');
+  body.innerHTML = '<span class="spinner"></span> Analyzing your pipeline…';
+
+  const saved = getSaved();
+  const tracked = getTracked();
+  const urgent = GRANTS.filter(g=>{
+    if(!g.deadlineDate) return false;
+    const d = Math.ceil((new Date(g.deadlineDate)-new Date())/(1000*60*60*24));
+    return d>=0 && d<=30;
+  });
+  const topGrants = GRANTS.filter(g=>g.score>=85).slice(0,6).map(g=>g.name);
+  const savedNames = saved.map(id=>GRANTS.find(g=>g.id===id)?.name).filter(Boolean);
+  const trackedSummary = Object.entries(tracked).map(([id,status])=>{
+    const g = GRANTS.find(g=>g.id===parseInt(id));
+    return g ? `${g.name} (${status})` : null;
+  }).filter(Boolean);
+
+  const context = `
+I Am Redemption pipeline snapshot:
+- Saved grants (${saved.length}): ${savedNames.join(', ')||'none yet'}
+- In tracker (${trackedSummary.length}): ${trackedSummary.join(', ')||'none yet'}
+- Urgent deadlines within 30 days: ${urgent.map(g=>g.name+' ('+g.deadline+')').join(', ')||'none'}
+- Top-scoring grants not yet engaged: ${topGrants.filter(n=>!savedNames.includes(n)).slice(0,4).join(', ')}
+  `.trim();
+
+  try{
+    const resp = await fetch(API_ENDPOINT, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:500,
+        system:`You are a strategic grant advisor for I Am Redemption, a 501(c)(3) nonprofit in Austin TX led by combat veteran Shawn Livingston. You analyze their grant pipeline and give a concise, specific, actionable daily action plan. Be direct, warm, and encouraging. Use bullet points. Max 5 bullets.`,
+        messages:[{role:'user', content:`Here is my current grant pipeline:
+${context}
+
+What are my top 3-5 actions TODAY to maximize funding success? Be specific — name the grant, the action, why now.`}]
+      })
+    });
+    const data = await resp.json();
+    if(data.error) throw new Error(data.error.message);
+    const text = data.content.filter(c=>c.type==='text').map(c=>c.text).join('\n');
+    body.innerHTML = text
+      .replace(/\*\*(.*?)\*\*/g,'<strong style="color:var(--white)">$1</strong>')
+      .replace(/^[•\-]\s/gm,'<div style="padding:.25rem 0;padding-left:.75rem;border-left:2px solid var(--gold-dim);margin-bottom:.4rem">')
+      .replace(/\n\n/g,'</div><br>')
+      .replace(/\n/g,'</div>') + '</div>';
+  } catch(e){
+    body.innerHTML = `<span style="color:var(--red)">Could not load advisor: ${e.message}</span>`;
+  }
+}
+
+
+
+
+
+
+
+/* ══════════════════════════════════════════════════════════
+   ENHANCED INIT
+══════════════════════════════════════════════════════════ */
+
+/* ══════════════════════════════════════════════════════════
+   INIT
+══════════════════════════════════════════════════════════ */
+function init(){
+  loadAIGrants();   // restore AI-added grants from localStorage before anything renders
+  renderGrants();
+  populateWriterSelect();
+  renderFocusCard();
+  renderActionBanner();
+  setTimeout(runCounters, 300);
+  startLiveCountdowns();
+}
+if(document.readyState==='loading'){
+  document.addEventListener('DOMContentLoaded',init);
+}else{
+  init();
+}
+</script>
+
+<!-- FLOATING AI PRIORITY ADVISOR -->
+<div class="ai-advisor-fab">
+  <div class="ai-advisor-panel" id="advisor-panel">
+    <div class="ai-advisor-head">
+      <div class="ai-advisor-head-title">⚡ Priority Advisor</div>
+      <button class="ai-advisor-close" onclick="toggleAdvisor()">✕</button>
+    </div>
+    <div class="ai-advisor-body" id="advisor-body">
+      <div style="color:var(--muted);font-size:12px">Click below to get your AI-powered action plan based on your current pipeline…</div>
+    </div>
+  </div>
+  <button class="ai-advisor-btn" onclick="toggleAdvisor()">
+    <span class="fab-dot"></span> What Should I Do Today?
+  </button>
+</div>
+
+</body>
+</html>
